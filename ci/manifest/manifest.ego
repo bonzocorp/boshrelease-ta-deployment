@@ -107,6 +107,7 @@ jobs:
 
       VAULT_ADDR:           (( grab meta.vault.address ))
       VAULT_TOKEN:          (( grab meta.vault.token ))
+      VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
       UAA_CLIENTS_FILE:             (( grab meta.<%= env.Name %>.uaa_clients_file ))
       VARS_FILE:            (( grab meta.<%= env.Name %>.vars_file ))
@@ -118,6 +119,9 @@ jobs:
     params:
       VAULT_ADDR:                   (( grab meta.vault.address ))
       VAULT_TOKEN:                  (( grab meta.vault.token ))
+      VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
+
+
 
       DEPLOYMENT_NAME:    <%= config.Name %>
       CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))
@@ -132,6 +136,7 @@ jobs:
     params: &<%= env.Name %>-params
       VAULT_ADDR:           (( grab meta.vault.address ))
       VAULT_TOKEN:          (( grab meta.vault.token ))
+      VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
       BOSH_DEPLOYMENT:      <%= config.Name %>
       BOSH_OPERATIONS:      (( grab meta.<%= env.Name %>.bosh_operations ))
@@ -200,6 +205,7 @@ jobs:
 
       VAULT_ADDR:           (( grab meta.vault.address ))
       VAULT_TOKEN:          (( grab meta.vault.token ))
+      VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
       UAA_CLIENTS_FILE:             (( grab meta.<%= env.Name %>.uaa_clients_file ))
       VARS_FILE:            (( grab meta.<%= env.Name %>.vars_file ))
@@ -228,6 +234,7 @@ jobs:
     params:
       VAULT_ADDR:                   (( grab meta.vault.address ))
       VAULT_TOKEN:                  (( grab meta.vault.token ))
+      VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
       BOSH_DEPLOYMENT:      <%= config.Name %>
       CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))
@@ -256,6 +263,7 @@ jobs:
     params:
       VAULT_ADDR:                   (( grab meta.vault.address ))
       VAULT_TOKEN:                  (( grab meta.vault.token ))
+      VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
       DEPLOYMENT_NAME:    <%= config.Name %>
       CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))
@@ -310,6 +318,7 @@ jobs:
     params:
       VAULT_ADDR:                   (( grab meta.vault.address ))
       VAULT_TOKEN:                  (( grab meta.vault.token ))
+      VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
       DEPLOYMENT_NAME:    <%= config.Name %>
       CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))

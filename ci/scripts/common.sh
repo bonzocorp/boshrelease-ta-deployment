@@ -46,8 +46,6 @@ function check_if_file_exists(){
 }
 
 function generate_configs(){
-  export VAULT_SKIP_VERIFY=true
-
   log "Generating config files ..."
 
   if [[ ! -z "$VARS_FILE" ]] ; then
