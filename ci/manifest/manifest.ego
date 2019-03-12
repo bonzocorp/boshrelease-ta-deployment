@@ -3,7 +3,6 @@
 ---
 
 meta:
-meta:
   pipeline:
     uri: https://github.com/bonzofenix/boshrelease-ta-deployment
 
@@ -377,9 +376,8 @@ resources:
 - name: pipeline
   type: git
   source:
-    branch:      (( grab meta.pipelines.branch || "master" ))
-    private_key: (( grab meta.pipelines.private_key ))
-    uri:         (( grab meta.pipelines.uri ))
+    branch:      (( grab meta.pipeline.branch || "master" ))
+    uri:         (( grab meta.pipeline.uri ))
 
 
 - name: metadata
