@@ -93,7 +93,7 @@ jobs:
     - get: config
       resource: <%= env.Name %>-configs
       params:
-        submodules: (( grab meta.git.submodules || none ))
+        submodules: (( grab meta.git.submodules || null ))
         submodule_recursive: false
 
     - put: lock
@@ -193,7 +193,7 @@ jobs:
     - get: config
       resource: <%= env.Name %>-configs
       params:
-        submodules: (( grab meta.git.submodules || none ))
+        submodules: (( grab meta.git.submodules || null ))
         submodule_recursive: false
     - put: lock
       params:
