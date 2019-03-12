@@ -13,6 +13,18 @@ fi
 OUTPUT=output
 mkdir -p $OUTPUT
 
+function load_custom_ca_certs(){
+  if [[ ! -z "$CUSTOM_ROOT_CA" ]] ; then
+    echo -e "$CUSTOM_ROOT_CA" > /etc/ssl/certs/custom_root_ca.crt
+  fi
+
+  if [[ ! -z "$CUSTOM_INTERMEDIATE_CA" ]] ; then
+    echo -e "$CUSTOM_INTERMEDIATE_CA" > /etc/ssl/certs/custom_intermediate_ca.crt
+  fi
+
+  update-ca-certificates
+}
+
 function log() {
   green='\033[0;32m'
   reset='\033[0m'

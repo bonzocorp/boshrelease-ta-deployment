@@ -114,6 +114,7 @@ function commit_config(){
 
 trap "sanitize_store && commit_config" EXIT
 
+load_custom_ca_certs
 generate_configs
 authenticate_director
 upload_stemcell

@@ -149,6 +149,8 @@ jobs:
       CREDS_FILE:           (( grab meta.<%= env.Name %>.creds_file ))
       MANIFEST_FILE:        (( grab meta.manifest_file ))
 
+      CUSTOM_ROOT_CA:                 ((grab meta.<%= env.Name %>.custom_root_ca || ""))
+      CUSTOM_INTERMEDIATE_CA:         ((grab meta.<%= env.Name %>.custom_intermediate_ca || ""))
 
       YAML2VAULT_PREFIX:    (( grab meta.<%= env.Name %>.yaml2vault_prefix ))
 
