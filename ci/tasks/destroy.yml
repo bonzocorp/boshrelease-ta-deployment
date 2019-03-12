@@ -1,0 +1,19 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: bonzofenix/ci-tools
+    version: v0.1.7
+
+params:
+
+inputs:
+  - name: pipeline
+  - name: config
+
+outputs:
+
+run:
+  path: pipeline/ci/scripts/destroy.sh

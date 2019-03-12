@@ -1,0 +1,392 @@
+<%! func ManifestTmpl(w io.Writer, config Config) error %>
+<%% import . "github.com/compozed/travel-agent/models" %%>
+---
+
+meta:
+meta:
+  pipeline:
+    uri: https://github.com/bonzofenix/boshrelease-ta-deployment
+
+  git:
+    username: (( param "git username for ci bot commits when upgrading secrets" ))
+    email: (( param "git email for ci bot commits when upgrading secrets" ))
+
+<% for _, env := range config.Envs { %>
+  <%= env.Name %>_upgrade_dependencies: &<%= env.Name %>_upgrade_dependencies
+    <% if env.HasDependencies() { %>
+    passed:
+      <% for _, dependency := range env.DependsOn { %>
+      - <%= dependency %>-upgrade
+      <% } %>
+    <% } else { %>
+    passed: []
+    <% } %>
+
+  <%= env.Name %>_update_dependencies: &<%= env.Name %>_update_dependencies
+    <% if env.HasDependencies() { %>
+    passed:
+      <% for _, dependency := range env.DependsOn { %>
+      - <%= dependency %>-update
+      <% } %>
+    <% } else { %>
+    passed: []
+    <% } %>
+<% } %>
+
+groups:
+- name: update
+  jobs:
+<% for _, env := range config.Envs { %>
+  - <%= env.Name %>-update
+<% } %>
+
+- name: upgrade
+  jobs:
+<% for _, env := range config.Envs { %>
+  - <%= env.Name %>-upgrade
+<% } %>
+
+- name: destroy
+  jobs:
+<% for _, env := range config.Envs { %>
+  <% if env.HasFeature("allow_destroy") { %>
+  - <%= env.Name %>-destroy
+  <% } %>
+<% } %>
+
+- name: backup
+  jobs:
+<% for _, env := range config.Envs { %>
+  <% if env.HasFeature("backup") { %>
+  - <%= env.Name %>-backup
+  <% } %>
+<% } %>
+
+- name: restore
+  jobs:
+<% for _, env := range config.Envs { %>
+  <% if env.HasFeature("restore") { %>
+  - <%= env.Name %>-restore
+  <% } %>
+<% } %>
+
+- name: restart-on-failure
+  jobs:
+<% for _, env := range config.Envs { %>
+  <% if env.HasFeature("restart-on-failure") { %>
+  - <%= env.Name %>-restart-on-failure
+  <% } %>
+<% } %>
+
+jobs:
+<% for _, env := range config.Envs { %>
+- name: <%= env.Name %>-upgrade
+  serial: true
+  plan:
+  - aggregate:
+<% for _, resource := range config.Resources { %>
+    - get: <%= resource.Name %>
+      <<: *<%= env.Name %>_upgrade_dependencies
+<% } %>
+    - get: pipeline
+      <<: *<%= env.Name %>_upgrade_dependencies
+    - get: metadata
+    - get: config
+      resource: <%= env.Name %>-configs
+      params:
+        submodules: (( grab meta.git.submodules || none ))
+        submodule_recursive: false
+
+    - put: lock
+      params:
+        claim: <%= env.Name %>
+
+<% if env.HasFeature("create_uaa_clients") { %>
+  - file: pipeline/ci/tasks/create_uaa_clients.yml
+    params:
+      DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
+
+      VAULT_ADDR:           (( grab meta.vault.address ))
+      VAULT_TOKEN:          (( grab meta.vault.token ))
+
+      UAA_CLIENTS_FILE:             (( grab meta.<%= env.Name %>.uaa_clients_file ))
+      VARS_FILE:            (( grab meta.<%= env.Name %>.vars_file ))
+    task: create_uaa_clients
+<% } %>
+
+<% if env.HasFeature("backup") { %>
+  - file: pipeline/ci/tasks/backup.yml
+    params:
+      VAULT_ADDR:                   (( grab meta.vault.address ))
+      VAULT_TOKEN:                  (( grab meta.vault.token ))
+
+      DEPLOYMENT_NAME:    <%= config.Name %>
+      CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))
+    on_success:
+      put: <%= env.Name %>-s3-backup
+      params:
+        file: output/backup.tgz
+    task: backup
+<% } %>
+
+  - file: pipeline/ci/tasks/upgrade.yml
+    params: &<%= env.Name %>-params
+      VAULT_ADDR:           (( grab meta.vault.address ))
+      VAULT_TOKEN:          (( grab meta.vault.token ))
+
+      BOSH_DEPLOYMENT:      <%= config.Name %>
+      BOSH_OPERATIONS:      (( grab meta.<%= env.Name %>.bosh_operations ))
+      BOSH_ERRANDS:         (( grab meta.<%= env.Name %>.bosh_errands || "" ))
+      BOSH_RECREATE:        (( grab meta.<%= env.Name %>.bosh_recreate || false ))
+      BOSH_SKIP_DRAIN:      (( grab meta.<%= env.Name %>.bosh_skip_drain || "" ))
+
+      STORE_FILE:           (( grab meta.<%= env.Name %>.store_file ))
+      VARS_FILE:            (( grab meta.<%= env.Name %>.vars_file ))
+      CREDS_FILE:           (( grab meta.<%= env.Name %>.creds_file ))
+      MANIFEST_FILE:        (( grab meta.manifest_file ))
+
+
+      YAML2VAULT_PREFIX:    (( grab meta.<%= env.Name %>.yaml2vault_prefix ))
+
+      GIT_USERNAME:         ((grab meta.git.username))
+      GIT_EMAIL:            ((grab meta.git.email))
+
+      DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
+    task: deploy
+<% if env.HasFeature("set-teams") { %>
+  - file: pipeline/ci/tasks/concourse/set_teams.yml
+    params:
+      ORGS_LIST_FILE:     (( grab meta.<%= env.Name %>.orgs_list_file ))
+      CF_API_URI:         (( grab meta.<%= env.Name %>.cf.api ))
+      CF_USER:            (( grab meta.<%= env.Name %>.cf.user ))
+      CF_PASSWORD:        (( grab meta.<%= env.Name %>.cf.password ))
+      CONCOURSE_TARGET:   (( grab meta.<%= env.Name %>.concourse.target ))
+      CONCOURSE_USERNAME: (( grab meta.<%= env.Name %>.concourse.user ))
+      CONCOURSE_PASSWORD: (( grab meta.<%= env.Name %>.concourse.password ))
+
+      DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
+    task: set_teams
+<% } %>
+
+  ensure: &<%= env.Name %>-ensure
+    put: config
+    resource: <%= env.Name %>-configs
+    params:
+      repository: config-mod
+      rebase: true
+    on_success:
+      put: lock
+      params:
+        release: lock
+
+- name: <%= env.Name %>-update
+  serial: true
+  plan:
+  - aggregate:
+    - get: pipeline
+      <<: *<%= env.Name %>_update_dependencies
+    - get: metadata
+    - get: config
+      resource: <%= env.Name %>-configs
+      params:
+        submodules: (( grab meta.git.submodules || none ))
+        submodule_recursive: false
+    - put: lock
+      params:
+        claim: <%= env.Name %>
+<% if env.HasFeature("create_uaa_clients") { %>
+  - file: pipeline/ci/tasks/create_uaa_clients.yml
+    params:
+      DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
+
+      VAULT_ADDR:           (( grab meta.vault.address ))
+      VAULT_TOKEN:          (( grab meta.vault.token ))
+
+      UAA_CLIENTS_FILE:             (( grab meta.<%= env.Name %>.uaa_clients_file ))
+      VARS_FILE:            (( grab meta.<%= env.Name %>.vars_file ))
+    task: create_uaa_clients
+<% } %>
+  - file: pipeline/ci/tasks/update.yml
+    params:
+      <<: *<%= env.Name %>-params
+    task: deploy
+  ensure:
+    <<: *<%= env.Name %>-ensure
+
+<% if env.HasFeature("allow_destroy") { %>
+- name: <%= env.Name %>-destroy
+  serial: true
+  plan:
+  - aggregate:
+    - get: pipeline
+    - get: config
+      resource: <%= env.Name %>-configs
+    - put: lock
+      params:
+        claim: <%= env.Name %>
+  - task: destroy
+    file: pipeline/ci/tasks/destroy.yml
+    params:
+      VAULT_ADDR:                   (( grab meta.vault.address ))
+      VAULT_TOKEN:                  (( grab meta.vault.token ))
+
+      BOSH_DEPLOYMENT:      <%= config.Name %>
+      CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))
+  on_success:
+    put: lock
+    params:
+      release: lock
+<% } %>
+
+<% if env.HasFeature("restore") { %>
+- name: <%= env.Name %>-restore
+  serial: true
+  plan:
+  - aggregate:
+    - get: pipeline
+    - put: lock
+      params:
+        claim: <%= env.Name %>
+    - get: config
+      resource: <%= env.Name %>-configs
+    - get: backup
+      resource: <%= env.Name %>-s3-backup
+      params:
+        unpack: true
+  - file: pipeline/ci/tasks/restore.yml
+    params:
+      VAULT_ADDR:                   (( grab meta.vault.address ))
+      VAULT_TOKEN:                  (( grab meta.vault.token ))
+
+      DEPLOYMENT_NAME:    <%= config.Name %>
+      CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))
+    task: restore
+  ensure:
+    put: lock
+    params:
+      release: lock
+<% } %>
+
+<% if env.HasFeature("restart-on-failure") { %>
+- name: <%= env.Name %>-restart-on-failure
+  serial: true
+  plan:
+  - aggregate:
+    - get: pipeline
+    - get: monitor-schedule-<%= env.Name %>
+      trigger: true
+    - get: config
+      resource: <%= env.Name %>-configs
+  - task: check_health
+    file: pipeline/ci/tasks/logsearch/check_health.yml
+    params:
+      INTERVAL:           15m
+      INDEX_PATTERN:      logs-app-*
+      ELASTICSEARCH_IP:   (( grab meta.<%= env.Name %>.elasticsearch_ip ))
+      ELASTICSEARCH_PORT: (( grab meta.<%= env.Name %>.elasticsearch_port ))
+      DEBUG:              (( grab meta.<%= env.Name %>.debug || false ))
+    on_failure:
+      task: restart_ingestor
+      file: pipeline/ci/tasks/logsearch/restart_ingestor.yml
+      params:
+        <<: *<%= env.Name %>-params
+<% } %>
+
+<% if env.HasFeature("backup") { %>
+- name: <%= env.Name %>-backup
+  serial: true
+  plan:
+  - aggregate:
+    - get: pipeline
+    <% if env.HasFeature("backup-daily") { %>
+    - get: every-day
+      trigger: true
+    <% } %>
+    - get: config
+      resource: <%= env.Name %>-configs
+    - put: lock
+      params:
+        claim: <%= env.Name %>
+  - file: pipeline/ci/tasks/backup.yml
+    params:
+      VAULT_ADDR:                   (( grab meta.vault.address ))
+      VAULT_TOKEN:                  (( grab meta.vault.token ))
+
+      DEPLOYMENT_NAME:    <%= config.Name %>
+      CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))
+    on_success:
+      put: <%= env.Name %>-s3-backup
+      params:
+        file: output/backup.tgz
+
+    task: backup
+  ensure:
+    put: lock
+    params:
+      release: lock
+
+
+<% } %>
+<% } %>
+
+
+resources:
+<% for _, env := range config.Envs { %>
+- name: <%= env.Name %>-configs
+  type: git
+  source:
+    paths:      (( grab meta.<%= env.Name %>.configs_git_paths ))
+    branch:      (( grab meta.configs.branch || "master" ))
+    private_key: (( grab meta.configs.private_key ))
+    uri:         (( grab meta.configs.uri ))
+
+<% if env.HasFeature("restart-on-failure") { %>
+- name: monitor-schedule-<%= env.Name %>
+  type: time
+  source:
+    interval: 15m
+<% } %>
+
+<% if env.HasFeature("backup-daily") { %>
+- name: every-day
+  type: time
+  source:
+    interval: 24h
+<% } %>
+
+<% if (env.HasFeature("backup") || env.HasFeature("restore")) { %>
+- name: <%= env.Name %>-s3-backup
+  source:
+    bucket:            (( grab meta.<%= env.Name %>.s3.bucket ))
+    versioned_file:    <%= env.Name %>/<%= config.Name %>/backup.tgz
+    access_key_id:     (( grab meta.<%= env.Name %>.s3.access_key_id ))
+    secret_access_key: (( grab meta.<%= env.Name %>.s3.secret_access_key ))
+  type: s3
+<% } %>
+<% } %>
+
+
+- name: lock
+  type: pool
+  source:
+    uri:         (( grab meta.locks.uri ))
+    branch:      (( grab meta.locks.branch || "master" ))
+    private_key: (( grab meta.locks.private_key ))
+    pool:        (( grab meta.locks.pool ))
+
+- name: pipeline
+  type: git
+  source:
+    branch:      (( grab meta.pipelines.branch || "master" ))
+    private_key: (( grab meta.pipelines.private_key ))
+    uri:         (( grab meta.pipelines.uri ))
+
+
+- name: metadata
+  type: build-metadata
+
+resource_types:
+- name: build-metadata
+  type: docker-image
+  source:
+    repository: mastertinner/build-metadata-resource

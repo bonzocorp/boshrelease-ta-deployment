@@ -1,0 +1,53 @@
+---
+
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: bonzofenix/ci-tools
+    version: v0.1.6
+
+inputs:
+  - name: pipeline
+  - name: config
+  - name: metadata
+  - name: stemcell
+  - name: logsearch-boshrelease
+    optional: true
+  - name: logsearch-for-cloudfoundry-boshrelease
+    optional: true
+  - name: jumpbox-boshrelease
+    optional: true
+  - name: os-conf-boshrelease
+    optional: true
+  - name: bosh-vsphere-cpi-boshrelease
+    optional: true
+  - name: prometheus-boshrelease
+    optional: true
+  - name: postgres-boshrelease
+    optional: true
+  - name: cf-routing-boshrelease
+    optional: true
+  - name: bpm-boshrelease
+    optional: true
+  - name: concourse-boshrelease
+    optional: true
+  - name: garden-runc-boshrelease
+    optional: true
+  - name: backup-and-restore-sdk-boshrelease
+    optional: true
+  - name: vault-boshrelease
+    optional: true
+  - name: vault-bbr-boshrelease
+    optional: true
+  - name: consul-boshrelease
+    optional: true
+
+
+
+outputs:
+  - name: config-mod
+
+run:
+  path: pipeline/ci/scripts/deploy.sh
