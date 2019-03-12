@@ -49,19 +49,19 @@ function generate_configs(){
   log "Generating config files ..."
 
   if [[ ! -z "$VARS_FILE" ]] ; then
-    spruce merge $VARS_FILE > $OUTPUT/vars.yml
+    spruce merge $VARS_FILE 2>/dev/null > $OUTPUT/vars.yml
   fi
 
   if [[ ! -z "$UAA_CLIENTS_FILE" ]] ; then
-    spruce merge $UAA_CLIENTS_FILE > $OUTPUT/uaa_clients.yml
+    spruce merge $UAA_CLIENTS_FILE 2>/dev/null > $OUTPUT/uaa_clients.yml
   fi
 
   if [[ ! -z "$STORE_FILE" ]] ; then
-    spruce merge $STORE_FILE > $OUTPUT/store.yml
+    spruce merge $STORE_FILE 2>/dev/null > $OUTPUT/store.yml
   fi
 
   if [[ ! -z "$CREDS_FILE" ]] ; then
-    spruce merge $CREDS_FILE > $OUTPUT/creds.yml
+    spruce merge $CREDS_FILE 2>/dev/null > $OUTPUT/creds.yml
   fi
 
 }
