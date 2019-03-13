@@ -87,3 +87,5 @@ function authenticate_director() {
   export BOSH_CA_CERT=$OUTPUT/bosh.crt
   bosh int $OUTPUT/creds.yml --path /bosh/ca_cert > $BOSH_CA_CERT
 }
+
+load_custom_ca_certs
