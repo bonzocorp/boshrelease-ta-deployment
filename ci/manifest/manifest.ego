@@ -209,6 +209,9 @@ jobs:
       VAULT_TOKEN:          (( grab meta.vault.token ))
       VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
+      CUSTOM_ROOT_CA:                 ((grab meta.<%= env.Name %>.custom_root_ca || ""))
+      CUSTOM_INTERMEDIATE_CA:         ((grab meta.<%= env.Name %>.custom_intermediate_ca || ""))
+
       UAA_CLIENTS_FILE:             (( grab meta.<%= env.Name %>.uaa_clients_file ))
       VARS_FILE:            (( grab meta.<%= env.Name %>.vars_file ))
     task: create_uaa_clients

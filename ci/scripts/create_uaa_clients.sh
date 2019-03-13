@@ -112,5 +112,6 @@ function create_uaa_clients() {
     done
 }
 
+load_custom_ca_certs
 generate_configs
 create_uaa_clients
