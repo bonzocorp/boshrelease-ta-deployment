@@ -128,7 +128,7 @@ jobs:
       CUSTOM_INTERMEDIATE_CA:         ((grab meta.<%= env.Name %>.custom_intermediate_ca || ""))
 
 
-      DEPLOYMENT_NAME:    <%= config.Name %>
+      DEPLOYMENT_NAME:    (( grab meta.name ))
       CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))
     on_success:
       put: <%= env.Name %>-s3-backup
@@ -143,7 +143,7 @@ jobs:
       VAULT_TOKEN:          (( grab meta.vault.token ))
       VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
-      BOSH_DEPLOYMENT:      <%= config.Name %>
+      BOSH_DEPLOYMENT:      (( grab meta.name ))
       BOSH_OPERATIONS:      (( grab meta.<%= env.Name %>.bosh_operations ))
       BOSH_ERRANDS:         (( grab meta.<%= env.Name %>.bosh_errands || "" ))
       BOSH_RECREATE:        (( grab meta.<%= env.Name %>.bosh_recreate || false ))
@@ -246,7 +246,7 @@ jobs:
       VAULT_TOKEN:                  (( grab meta.vault.token ))
       VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
-      BOSH_DEPLOYMENT:      <%= config.Name %>
+      BOSH_DEPLOYMENT:      (( grab meta.name ))
       CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))
   on_success:
     put: lock
@@ -275,7 +275,7 @@ jobs:
       VAULT_TOKEN:                  (( grab meta.vault.token ))
       VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
-      DEPLOYMENT_NAME:    <%= config.Name %>
+      DEPLOYMENT_NAME:    (( grab meta.name ))
       CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))
     task: restore
   ensure:
