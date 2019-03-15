@@ -6,7 +6,7 @@ image_resource:
   type: docker-image
   source:
     repository: bonzofenix/ci-tools
-    version: v0.1.6
+    tag: v0.1.6
 
 inputs:
   - name: pipeline

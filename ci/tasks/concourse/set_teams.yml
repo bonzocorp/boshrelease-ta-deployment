@@ -6,7 +6,7 @@ image_resource:
   type: docker-image
   source:
     repository: bonzofenix/ci-tools
-    version: edge
+    tag: edge
 
 params:
   CF_API_URI:
