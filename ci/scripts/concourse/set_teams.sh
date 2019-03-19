@@ -2,13 +2,6 @@
 
 exec >&2
 set -e
-#!/bin/bash
-
-###
-# @description
-#
-#
-##
 
 source pipeline/ci/scripts/common.sh
 
@@ -33,12 +26,14 @@ function set_team_for(){
   local org=$1
   local user=$2
 
+  log "Adding user: $user to team: $org"
+
   fly -t concourse set-team \
     --non-interactive \
     --team-name $org \
     --cf-user $user \
     --cf-org $org \
-    --cf-space $org:dev
+    --cf-space $org:dev > /dev/null
 }
 
 check_if_exists "CF_API_URI is empty" $CF_API_URI
