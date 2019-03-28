@@ -46,3 +46,19 @@ Recomended only for dev environments.
 
 Performs bbr backup and upload it to S3.
 
+## Custom features
+
+this features only apply to spefic boshreleases:
+
+### Concourse
+
+**set-teams**
+
+### Vault
+
+**check-cluster**
+
+Reads and writes a secret in vault. Fails when it can not perform the read.
+
+### Logsearch
+
