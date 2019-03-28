@@ -109,8 +109,8 @@ jobs:
       VAULT_TOKEN:          (( grab meta.vault.token ))
       VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.<%= env.Name %>.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.<%= env.Name %>.custom_intermediate_ca || ""))
+      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
+      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
 
       UAA_CLIENTS_FILE:             (( grab meta.<%= env.Name %>.uaa_clients_file ))
       VARS_FILE:            (( grab meta.<%= env.Name %>.vars_file ))
@@ -124,8 +124,8 @@ jobs:
       VAULT_TOKEN:                  (( grab meta.vault.token ))
       VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.<%= env.Name %>.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.<%= env.Name %>.custom_intermediate_ca || ""))
+      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
+      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
 
 
       DEPLOYMENT_NAME:    (( grab meta.name ))
@@ -154,8 +154,8 @@ jobs:
       CREDS_FILE:           (( grab meta.<%= env.Name %>.creds_file ))
       MANIFEST_FILE:        (( grab meta.manifest_file ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.<%= env.Name %>.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.<%= env.Name %>.custom_intermediate_ca || ""))
+      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
+      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
 
       YAML2VAULT_PREFIX:    (( grab meta.<%= env.Name %>.yaml2vault_prefix ))
 
@@ -214,8 +214,8 @@ jobs:
       VAULT_TOKEN:          (( grab meta.vault.token ))
       VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.<%= env.Name %>.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.<%= env.Name %>.custom_intermediate_ca || ""))
+      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
+      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
 
       UAA_CLIENTS_FILE:             (( grab meta.<%= env.Name %>.uaa_clients_file ))
       VARS_FILE:            (( grab meta.<%= env.Name %>.vars_file ))
@@ -330,8 +330,8 @@ jobs:
       VAULT_TOKEN:                  (( grab meta.vault.token ))
       VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.<%= env.Name %>.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.<%= env.Name %>.custom_intermediate_ca || ""))
+      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
+      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
 
       DEPLOYMENT_NAME:    <%= config.Name %>
       CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))
