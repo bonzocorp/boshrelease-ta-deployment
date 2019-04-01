@@ -20,26 +20,12 @@ Travel agent deployment project to deploy the following boshreleases:
 
 ## Global features
 
-**slack_updates** (pending)
-
-Sends slack notification when a new boshrelease.
-
-**update_deployment**
-
-When enabled it will create update jobs for each of your environments. This can be useful when
-you do not want a new tile or stemcell to apply when deploying.
-
-**pin_versions** (pending)
-
-__Note__: Requires concourse v5
-
-Pins resources to provided version through a yaml config file.
-
-### Logsearch
-
-**restart-on-failure**
-
-Restarts ingestor if no logs have been recieved in the last 15 min.
+| name                          |                                         |
+|-----------------------------------------|-----------------------------------------|
+|   **slack_updates** (pending)           |  Sends slack notification when a new boshrelease are available. |
+| **update_deployment**                   |  When enabled it will create update jobs for each of your environments. This can be useful when you do not want a new tile or stemcell to apply when deploying. |
+| **pin_versions** (Requires concouse v5) |  Pins resources to provided version through a yaml config file. |
+| **restart-on-failure** (For Logsearch only) |  Restarts ingestor if no logs have been recieved in the last 15 min. |
 
 ## Environment Features
 
