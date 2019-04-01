@@ -41,6 +41,9 @@ groups:
 
 - name: upgrade
   jobs:
+<% if config.HasFeature("pin_versions") { %>
+  - pin-resources
+<% } %>
 <% for _, env := range config.Envs { %>
   - <%= env.Name %>-upgrade
 <% } %>
@@ -78,6 +81,29 @@ groups:
 <% } %>
 
 jobs:
+<% if config.HasFeature("pin_versions") { %>
+- name: pin-resources
+  plan:
+  - aggregate:
+    - get: pipeline
+    - get: config
+      resource: <%= config.Name %>-pins
+      trigger: true
+  - task: run
+    file: pipeline/ci/tasks/pin-resources.yml
+    params:
+      CUSTOM_ROOT_CA:                 (( grab meta.custom_root_ca || "" ))
+
+      CUSTOM_INTERMEDIATE_CA:         (( grab meta.custom_intermediate_ca || "" ))
+      DEBUG:              (( grab meta.debug || false ))
+      PIPELINE_NAME:      <%= config.Name %>
+      PINS_FILE:          (( grab meta.pins_file ))
+      CONCOURSE_TARGET:   (( grab meta.concourse.target ))
+      CONCOURSE_USERNAME: (( grab meta.concourse.user ))
+      CONCOURSE_PASSWORD: (( grab meta.concourse.password ))
+      CONCOURSE_TEAM:     (( grab meta.concourse.team ))
+<% } %>
+
 <% for _, env := range config.Envs { %>
 - name: <%= env.Name %>-upgrade
   serial: true
@@ -414,6 +440,17 @@ resources:
 
 - name: metadata
   type: build-metadata
+
+<% if config.HasFeature("pin_versions") { %>
+- name: <%= config.Name %>-pins
+  type: git
+  source:
+    paths:
+    - default/<%= config.Name %>/pins.yml
+    branch:      (( grab meta.configs.branch || "master" ))
+    private_key: (( grab meta.configs.private_key ))
+    uri:         (( grab meta.configs.uri ))
+<% } %>
 
 resource_types:
 - name: build-metadata
