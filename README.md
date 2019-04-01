@@ -35,6 +35,12 @@ __Note__: Requires concourse v5
 
 Pins resources to provided version through a yaml config file.
 
+### Logsearch
+
+**restart-on-failure**
+
+Restarts ingestor if no logs have been recieved in the last 15 min.
+
 ## Environment Features
 
 **allow_destroy**
@@ -46,10 +52,6 @@ Recomended only for dev environments.
 
 Performs bbr backup and upload it to S3.
 
-## Custom features
-
-this features only apply to spefic boshreleases:
-
 ### Concourse
 
 **set-teams**
@@ -59,6 +61,4 @@ this features only apply to spefic boshreleases:
 **check-cluster**
 
 Reads and writes a secret in vault. Fails when it can not perform the read.
-
-### Logsearch
 

@@ -74,12 +74,12 @@ groups:
   <% } %>
 <% } %>
 
+<% if config.HasFeature("restart-on-failure") { %>
 - name: restart-on-failure
   jobs:
 <% for _, env := range config.Envs { %>
-  <% if env.HasFeature("restart-on-failure") { %>
   - <%= env.Name %>-restart-on-failure
-  <% } %>
+<% } %>
 <% } %>
 
 jobs:
@@ -324,7 +324,7 @@ jobs:
       release: lock
 <% } %>
 
-<% if env.HasFeature("restart-on-failure") { %>
+<% if config.HasFeature("restart-on-failure") { %>
 - name: <%= env.Name %>-restart-on-failure
   serial: true
   plan:
@@ -401,7 +401,7 @@ resources:
     private_key: (( grab meta.configs.private_key ))
     uri:         (( grab meta.configs.uri ))
 
-<% if env.HasFeature("restart-on-failure") { %>
+<% if config.HasFeature("restart-on-failure") { %>
 - name: monitor-schedule-<%= env.Name %>
   type: time
   source:
