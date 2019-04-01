@@ -33,10 +33,12 @@ meta:
 <% } %>
 
 groups:
+<% if config.HasFeature("update_deployment") { %>
 - name: update
   jobs:
 <% for _, env := range config.Envs { %>
   - <%= env.Name %>-update
+<% } %>
 <% } %>
 
 - name: upgrade
@@ -226,6 +228,7 @@ jobs:
       params:
         release: lock
 
+<% if config.HasFeature("update_deployment") { %>
 - name: <%= env.Name %>-update
   serial: true
   plan:
@@ -263,6 +266,7 @@ jobs:
     task: deploy
   ensure:
     <<: *<%= env.Name %>-ensure
+<% } %>
 
 <% if env.HasFeature("allow_destroy") { %>
 - name: <%= env.Name %>-destroy
