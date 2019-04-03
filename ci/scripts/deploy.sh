@@ -50,7 +50,7 @@ function deploy() {
   bosh deploy $MANIFEST_FILE \
     --vars-store $OUTPUT/store.yml \
     -l $OUTPUT/releases_versions.yml \
-    --vars-file $OUTPUT/vars.yml \
+    -l $OUTPUT/vars.yml \
     -v deployment_name=$BOSH_DEPLOYMENT \
     -v stemcell_version="'$stemcell_version'" \
       $bosh_args -n
