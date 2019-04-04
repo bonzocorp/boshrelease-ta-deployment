@@ -206,7 +206,7 @@ jobs:
       DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
     task: set_teams
 <% } %>
-<% if env.HasFeature("check-cluster") { %>
+<% if env.HasFeature("check_cluster") { %>
   - file: pipeline/ci/tasks/vault/check_cluster.yml
     params:
       DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
