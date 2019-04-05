@@ -211,6 +211,10 @@ jobs:
     params:
       DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
 
+
+      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
+      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+
       VAULT_ADDR:           (( grab meta.vault.address ))
       VAULT_TOKEN:          (( grab meta.vault.token ))
       VAULT_SKIP_VERIFY:    (( grab meta.vault.vault_skip_verify || "false" ))
