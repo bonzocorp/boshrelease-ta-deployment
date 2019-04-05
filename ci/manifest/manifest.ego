@@ -74,7 +74,7 @@ groups:
   <% } %>
 <% } %>
 
-<% if config.HasFeature("restart-on-failure") { %>
+<% if config.HasFeature("restart_on_failure") { %>
 - name: restart-on-failure
   jobs:
 <% for _, env := range config.Envs { %>
@@ -192,7 +192,7 @@ jobs:
 
       DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
     task: deploy
-<% if env.HasFeature("set-teams") { %>
+<% if env.HasFeature("set_teams") { %>
   - file: pipeline/ci/tasks/concourse/set_teams.yml
     params:
       ORGS_LIST_FILE:     (( grab meta.<%= env.Name %>.orgs_list_file ))
@@ -328,7 +328,7 @@ jobs:
       release: lock
 <% } %>
 
-<% if config.HasFeature("restart-on-failure") { %>
+<% if config.HasFeature("restart_on_failure") { %>
 - name: <%= env.Name %>-restart-on-failure
   serial: true
   plan:
@@ -359,7 +359,7 @@ jobs:
   plan:
   - aggregate:
     - get: pipeline
-    <% if env.HasFeature("backup-daily") { %>
+    <% if env.Feature("backup") == "daily" { %>
     - get: every-day
       trigger: true
     <% } %>
@@ -405,14 +405,14 @@ resources:
     private_key: (( grab meta.configs.private_key ))
     uri:         (( grab meta.configs.uri ))
 
-<% if config.HasFeature("restart-on-failure") { %>
+<% if config.HasFeature("restart_on_failure") { %>
 - name: monitor-schedule-<%= env.Name %>
   type: time
   source:
     interval: 15m
 <% } %>
 
-<% if env.HasFeature("backup-daily") { %>
+<% if env.Feature("backup") == "daily" { %>
 - name: every-day
   type: time
   source:

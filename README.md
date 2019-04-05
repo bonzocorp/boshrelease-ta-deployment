@@ -22,19 +22,19 @@ Travel agent deployment project to deploy the following boshreleases:
 
 | name                          |                                         |
 |-----------------------------------------|-----------------------------------------|
-|   **slack_updates** (pending)           |  Sends slack notification when a new boshrelease are available. |
-| **update_deployment**                   |  When enabled it will create update jobs for each of your environments. This can be useful when you do not want a new tile or stemcell to apply when deploying. |
-| **pin_versions** (Requires concouse v5) |  Pins resources to provided version through a yaml config file. |
-| **restart-on-failure** (For Logsearch) |  Restarts ingestor if no logs have been recieved in the last 15 min. |
+| **slack_updates** (pending)             | Sends slack notification when a new boshrelease are available. |
+| **update_deployment**                   | When enabled it will create update jobs for each of your environments. This can be useful when you do not want a new tile or stemcell to apply when deploying. |
+| **pin_versions** (Requires concouse v5) | Pins resources to provided version through a yaml config file. |
+| **restart_on_failure** (For Logsearch)  | Restarts ingestor if no logs have been recieved in the last 15 min. |
 
 ## Environment Features
 
 | name                                    |                                         |
 |-----------------------------------------|-----------------------------------------|
 | **allow_destroy**                       | When enabled it will add a destroy job to remove the boshrelease in the provided environment.  Recomended only for dev environments. |
-| **backup**                              | Performs bbr backup and upload it to S3. |
-| **set-teams** (For Concourse)           | pending |
+| **backup**                              | `<opts>[daily, on_updates]` Performs bbr backup and upload it to S3. |
+| **set_teams** (For Concourse)           | pending |
 | **pin_versions** (Requires concouse v5) | Pins resources to provided version through a yaml config file. |
-| **restart-on-failure** (For Logsearch)  | Restarts ingestor if no logs have been recieved in the last 15 min. |
-| **check-cluster** (For Vault)           | Reads and writes a secret in vault. Fails when it can not perform the read.  |
+| **restart_on_failure** (For Logsearch)  | Restarts ingestor if no logs have been recieved in the last 15 min. |
+| **check_cluster** (For Vault)           | Reads and writes a secret in vault. Fails when it can not perform the read.  |
 
