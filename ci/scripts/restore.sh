@@ -3,8 +3,6 @@
 exec >&2
 set -e
 
-[[ "${DEBUG,,}" == "true" ]] && set -x
-
 source pipeline/ci/scripts/common.sh
 
 function restore(){
