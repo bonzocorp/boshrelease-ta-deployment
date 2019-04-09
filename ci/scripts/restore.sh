@@ -6,7 +6,7 @@ set -e
 source pipeline/ci/scripts/common.sh
 
 function restore(){
-  bbr deployment -t $BOSH_ENVIRONMENT -u $BOSH_CLIENT -d $DEPLOYMENT_NAME --ca-cert=$BOSH_CA_CERT restore --artifact-path backup/*
+  bbr deployment -t $BOSH_ENVIRONMENT -u $BOSH_CLIENT -d $DEPLOYMENT_NAME --ca-cert=$BOSH_CA_CERT restore --artifact-path backup/${DEPLOYMENT_NAME}_*
 }
 
 generate_configs
