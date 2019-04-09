@@ -69,7 +69,7 @@ groups:
 - name: restore
   jobs:
 <% for _, env := range config.Envs { %>
-  <% if env.HasFeature("restore") { %>
+  <% if env.HasFeature("backup") { %>
   - <%= env.Name %>-restore
   <% } %>
 <% } %>
@@ -145,7 +145,7 @@ jobs:
     task: create_uaa_clients
 <% } %>
 
-<% if env.HasFeature("backup") { %>
+<% if env.HasFeature("backup") && env.Feature("backup") != "on_demand" { %>
   - file: pipeline/ci/tasks/backup.yml
     params:
       VAULT_ADDR:                   (( grab meta.vault.address ))
@@ -298,7 +298,7 @@ jobs:
       release: lock
 <% } %>
 
-<% if env.HasFeature("restore") { %>
+<% if env.HasFeature("backup") { %>
 - name: <%= env.Name %>-restore
   serial: true
   plan:
@@ -321,6 +321,8 @@ jobs:
 
       DEPLOYMENT_NAME:    (( grab meta.name ))
       CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))
+
+      DEBUG:              (( grab meta.debug || false ))
     task: restore
   ensure:
     put: lock
@@ -419,7 +421,7 @@ resources:
     interval: 24h
 <% } %>
 
-<% if (env.HasFeature("backup") || env.HasFeature("restore")) { %>
+<% if env.HasFeature("backup") { %>
 - name: <%= env.Name %>-s3-backup
   source:
     bucket:            (( grab meta.<%= env.Name %>.s3.bucket ))
