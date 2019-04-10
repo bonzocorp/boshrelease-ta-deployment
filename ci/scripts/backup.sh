@@ -9,7 +9,7 @@ source pipeline/ci/scripts/common.sh
 
 function backup(){
  bbr deployment -t $BOSH_ENVIRONMENT -u $BOSH_CLIENT -d $DEPLOYMENT_NAME --ca-cert=$BOSH_CA_CERT backup
- tar -cvzf $OUTPUT/backup.tgz $DEPLOYMENT_NAME_*
+ tar -cvzf $OUTPUT/backup.tgz ${DEPLOYMENT_NAME}_*
 }
 
 generate_configs

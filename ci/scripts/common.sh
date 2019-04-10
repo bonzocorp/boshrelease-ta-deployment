@@ -7,7 +7,6 @@ if [[ "${DEBUG,,}" == "true" ]]; then
   set -x
   echo "Environment Variables:"
   env
-
 fi
 
 OUTPUT=output

@@ -319,10 +319,14 @@ jobs:
       VAULT_TOKEN:                  (( grab meta.vault.token ))
       VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
+      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
+      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+
       DEPLOYMENT_NAME:    (( grab meta.name ))
       CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))
 
-      DEBUG:              (( grab meta.debug || false ))
+      DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
+
     task: restore
   ensure:
     put: lock
