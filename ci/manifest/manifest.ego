@@ -175,6 +175,7 @@ jobs:
       BOSH_OPERATIONS:      (( grab meta.<%= env.Name %>.bosh_operations ))
       BOSH_ERRANDS:         (( grab meta.<%= env.Name %>.bosh_errands || "" ))
       BOSH_RECREATE:        (( grab meta.<%= env.Name %>.bosh_recreate || false ))
+      BOSH_NO_REDACT:       (( grab meta.<%= env.Name %>.no_redact || false ))
       BOSH_SKIP_DRAIN:      (( grab meta.<%= env.Name %>.bosh_skip_drain || "" ))
 
       STORE_FILE:           (( grab meta.<%= env.Name %>.store_file ))

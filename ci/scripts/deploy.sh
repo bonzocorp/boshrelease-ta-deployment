@@ -27,6 +27,10 @@ function deploy() {
     bosh_args="$bosh_args --recreate"
   fi
 
+  if [[ "${BOSH_NO_REDACT,,}" == "true" ]] ; then
+    bosh_args="$bosh_args --no-redact"
+  fi
+
   if [[ ! -z "${BOSH_SKIP_DRAIN}" ]] ; then
     bosh_args="$bosh_args --skip-drain=$BOSH_SKIP_DRAIN"
   fi
