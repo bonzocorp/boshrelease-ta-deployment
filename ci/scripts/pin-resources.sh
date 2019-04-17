@@ -20,6 +20,7 @@ function pin_versions(){
 
     fly -t concourse check-resource -r $PIPELINE_NAME/$resource_name -f version:$version_regex
     sleep 5
+    fly -t concourse curl /api/v1/teams/$CONCOURSE_TEAM/pipelines/$PIPELINE_NAME/resources/$resource_name/unpin -- -k -X PUT
     fly -t concourse curl /api/v1/teams/$CONCOURSE_TEAM/pipelines/$PIPELINE_NAME/resources/$resource_name/versions/$version_id/pin -- -k -X PUT
   done < $PINS_FILE
 }
