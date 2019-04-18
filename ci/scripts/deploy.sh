@@ -31,6 +31,10 @@ function deploy() {
     bosh_args="$bosh_args --no-redact"
   fi
 
+  if [[ "${BOSH_DRY_RUN,,}" == "true" ]] ; then
+    bosh_args="$bosh_args --dry-run"
+  fi
+
   if [[ ! -z "${BOSH_SKIP_DRAIN}" ]] ; then
     bosh_args="$bosh_args --skip-drain=$BOSH_SKIP_DRAIN"
   fi
