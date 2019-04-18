@@ -10,6 +10,11 @@ meta:
     username: (( param "git username for ci bot commits when upgrading secrets" ))
     email: (( param "git email for ci bot commits when upgrading secrets" ))
 
+<% if config.HasFeature("slack_updates") { %>
+  slack_updates:
+    uri: (( param "Slack integration webhook uri" ))
+<% } %>
+
 <% for _, env := range config.Envs { %>
   <%= env.Name %>_upgrade_dependencies: &<%= env.Name %>_upgrade_dependencies
     <% if env.HasDependencies() { %>
@@ -232,6 +237,23 @@ jobs:
       put: lock
       params:
         release: lock
+<% if config.HasFeature("slack_updates") { %>
+  on_success:
+    put: notify
+    params:
+      channel:  (( grab meta.slack_updates.channel ))
+      username: (( grab meta.slack_updates.username ))
+      icon_url: (( grab meta.slack_updates.success.icon_url ))
+      text: "Finish <%= config.Name %> boshrelease deployment successfully"
+  on_failure:
+    put: notify
+    params:
+      channel:  (( grab meta.slack_updates.channel ))
+      username: (( grab meta.slack_updates.username ))
+      icon_url: (( grab meta.slack_updates.failure.icon_url ))
+      text: "Finish <%= config.Name %> boshrelease deployment with failure"
+<% } %>
+
 
 <% if config.HasFeature("update_deployment") { %>
 - name: <%= env.Name %>-update
@@ -412,6 +434,7 @@ resources:
     private_key: (( grab meta.configs.private_key ))
     uri:         (( grab meta.configs.uri ))
 
+
 <% if config.HasFeature("restart_on_failure") { %>
 - name: monitor-schedule-<%= env.Name %>
   type: time
@@ -437,6 +460,12 @@ resources:
 <% } %>
 <% } %>
 
+<% if config.HasFeature("slack_updates") { %>
+- name: notify
+  type: slack-notification
+  source:
+    url: (( grab meta.slack_updates.uri ))
+<% } %>
 
 - name: lock
   type: pool
@@ -472,3 +501,8 @@ resource_types:
   type: docker-image
   source:
     repository: mastertinner/build-metadata-resource
+
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
