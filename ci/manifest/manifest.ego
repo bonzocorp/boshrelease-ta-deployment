@@ -245,14 +245,14 @@ jobs:
       channel:  (( grab meta.slack_updates.channel ))
       username: (( grab meta.slack_updates.username ))
       icon_url: (( grab meta.slack_updates.success.icon_url ))
-      text: "Finish <%= config.Name %> boshrelease deployment successfully"
+      text: "Finish <%= config.Name %> boshrelease deployment in <%= env.Name %> with successfully"
   on_failure:
     put: notify
     params:
       channel:  (( grab meta.slack_updates.channel ))
       username: (( grab meta.slack_updates.username ))
       icon_url: (( grab meta.slack_updates.failure.icon_url ))
-      text: "Finish <%= config.Name %> boshrelease deployment with failure"
+      text: "Finish <%= config.Name %> boshrelease deployment in <%= env.Name %> with failure"
 <% } %>
 
 
