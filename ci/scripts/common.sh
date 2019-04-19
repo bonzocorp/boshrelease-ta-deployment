@@ -75,6 +75,10 @@ function generate_configs(){
     spruce merge $CREDS_FILE 2>/dev/null > $OUTPUT/creds.yml
   fi
 
+  if [[ ! -z "$CLOUD_CONFIG_FILE" ]] ; then
+    spruce merge $CLOUD_CONFIG_FILE 2>/dev/null > $OUTPUT/cloud-config.yml
+  fi
+
 }
 
 function authenticate_director() {
