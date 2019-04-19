@@ -241,7 +241,7 @@ jobs:
 <% } %>
 
 <% if config.HasFeature("update_cloud_config") { %>
-  - file: pipeline/ci/tasks/vault/update_cloud_config.yml
+  - file: pipeline/ci/tasks/bosh/update_cloud_config.yml
     params:
       DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
 
