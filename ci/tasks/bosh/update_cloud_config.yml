@@ -15,4 +15,4 @@ inputs:
   - name: config
 
 run:
-  path: pipeline/ci/scripts/update_cloud_config.sh
+  path: pipeline/ci/scripts/bosh/update_cloud_config.sh
