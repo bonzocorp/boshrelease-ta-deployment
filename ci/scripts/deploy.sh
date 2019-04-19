@@ -44,6 +44,8 @@ function deploy() {
     check_if_exists "STATE_FILE can not be empty when using create-env" $STATE_FILE
     bosh_action="create-env"
     bosh_args="$bosh_args --state=$STATE_FILE"
+    cp $MANIFEST_FILE manifest.yml
+    MANIFEST_FILE=manifest.yml
   fi
 
   for release in $(ls -d *-boshrelease); do
