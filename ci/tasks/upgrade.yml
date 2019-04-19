@@ -43,6 +43,10 @@ inputs:
     optional: true
   - name: consul-boshrelease
     optional: true
+  - name: bosh-boshrelease
+    optional: true
+  - name: uaa-boshrelease
+    optional: true
 
 
 
