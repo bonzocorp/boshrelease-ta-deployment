@@ -32,17 +32,18 @@ function deploy() {
     bosh_args="$bosh_args --recreate"
   fi
 
-  if [[ "${BOSH_NO_REDACT,,}" == "true" ]] ; then
+  if [[ "${BOSH_NO_REDACT,,}" == "true" && "${BOSH_CREATE_ENV,,}" != "true" ]] ; then
     bosh_args="$bosh_args --no-redact"
   fi
 
-  if [[ "${BOSH_DRY_RUN,,}" == "true" ]] ; then
+  if [[ "${BOSH_DRY_RUN,,}" == "true"   && "${BOSH_CREATE_ENV,,}" != "true" ]] ; then
     bosh_args="$bosh_args --dry-run"
   fi
 
   if [[ "${BOSH_CREATE_ENV,,}" == "true" ]] ; then
+    check_if_exists "STATE_FILE can not be empty when using create-env" $STATE_FILE
     bosh_action="create-env"
-    bosh_args="$bosh_args --state=$BOSH_STATE_FILE"
+    bosh_args="$bosh_args --state=$STATE_FILE"
   fi
 
   for release in $(ls -d *-boshrelease); do
