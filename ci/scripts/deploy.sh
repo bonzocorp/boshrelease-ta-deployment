@@ -18,10 +18,15 @@ function get_current_stemcell() {
 function deploy() {
   local stemcell_version=""
   local bosh_args=""
+  local bosh_action="deploy"
 
   for operation_file in $BOSH_OPERATIONS ;do
     bosh_args="$bosh_args -o $operation_file"
   done
+
+  if [[ ! -z "${BOSH_SKIP_DRAIN}" ]] ; then
+    bosh_args="$bosh_args --skip-drain=$BOSH_SKIP_DRAIN"
+  fi
 
   if [[ "${BOSH_RECREATE,,}" == "true" ]] ; then
     bosh_args="$bosh_args --recreate"
@@ -35,8 +40,9 @@ function deploy() {
     bosh_args="$bosh_args --dry-run"
   fi
 
-  if [[ ! -z "${BOSH_SKIP_DRAIN}" ]] ; then
-    bosh_args="$bosh_args --skip-drain=$BOSH_SKIP_DRAIN"
+  if [[ "${BOSH_CREATE_ENV,,}" == "true" ]] ; then
+    bosh_action="create-env"
+    bosh_args="$bosh_args --state=$BOSH_STATE_FILE"
   fi
 
   for release in $(ls -d *-boshrelease); do
@@ -55,7 +61,7 @@ function deploy() {
     stemcell_version="$(get_current_stemcell)"
   fi
 
-  bosh deploy $MANIFEST_FILE \
+  bosh $bosh_action $MANIFEST_FILE \
     --vars-store $OUTPUT/store.yml \
     -l $OUTPUT/releases_versions.yml \
     -l $OUTPUT/vars.yml \
@@ -125,10 +131,12 @@ trap "sanitize_store && commit_config" EXIT
 load_custom_ca_certs
 generate_configs
 authenticate_director
-upload_stemcell
-for release in $(ls -d *-boshrelease); do
-  upload_release $release
-done
+if [[ "${BOSH_CREATE_ENV,,}" == "false" ]] ; then
+  upload_stemcell
+  for release in $(ls -d *-boshrelease); do
+    upload_release $release
+  done
+fi
 deploy
 sanitize_store
 
