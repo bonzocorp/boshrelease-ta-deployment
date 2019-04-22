@@ -112,19 +112,24 @@ function commit_config(){
 
   git clone config config-mod
 
+  if [[ -s ${STATE_FILE} ]]; then
+    cp ${STATE_FILE} ${STATE_FILE/config/config-mod}
+    git -C config-mod add ${STATE_FILE/config\//}
+  fi
+
   if [[ -s ${OUTPUT}/sanitized_store.yml ]]; then
     cp ${OUTPUT}/sanitized_store.yml ${STORE_FILE/config/config-mod}
     git -C config-mod add ${STORE_FILE/config\//}
   fi
 
+
   pushd config-mod > /dev/null
-    git add ${STATE_FILE/config\//}
 
     git config --global user.name $GIT_USERNAME
     git config --global user.email $GIT_EMAIL
 
     if ! git diff-index --quiet HEAD --; then
-      git commit -m "Updates state and store file: https://$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME "
+      git commit -m "Updates files for deployment: https://$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME "
     fi
   popd > /dev/null
 }
