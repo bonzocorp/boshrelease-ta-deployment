@@ -465,7 +465,7 @@ jobs:
       CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
       CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
 
-      DEPLOYMENT_NAME:    <%= config.Name %>
+      DEPLOYMENT_NAME:    (( grab meta.name ))
       CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))
     on_success:
       put: <%= env.Name %>-s3-backup
