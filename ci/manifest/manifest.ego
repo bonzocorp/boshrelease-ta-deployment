@@ -63,28 +63,26 @@ groups:
 <% } %>
 <% } %>
 
+<% if config.HasEnvsWithFeature("allow_destroy") { %>
 - name: destroy
   jobs:
-<% for _, env := range config.Envs { %>
-  <% if env.HasFeature("allow_destroy") { %>
+<% for _, env := range config.EnvsWithFeature("allow_destroy") { %>
   - <%= env.Name %>-destroy
-  <% } %>
+<% } %>
 <% } %>
 
+<% if config.HasEnvsWithFeature("backup") { %>
 - name: backup
   jobs:
-<% for _, env := range config.Envs { %>
-  <% if env.HasFeature("backup") { %>
+<% for _, env := range config.EnvsWithFeature("backup") { %>
   - <%= env.Name %>-backup
-  <% } %>
 <% } %>
 
 - name: restore
   jobs:
-<% for _, env := range config.Envs { %>
-  <% if env.HasFeature("backup") { %>
+<% for _, env := range config.EnvsWithFeature("backup") { %>
   - <%= env.Name %>-restore
-  <% } %>
+<% } %>
 <% } %>
 
 <% if config.HasFeature("restart_on_failure") { %>
