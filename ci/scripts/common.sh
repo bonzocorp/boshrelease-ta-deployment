@@ -31,7 +31,7 @@ function check_vault_unseal() {
   while read ip; do
     seal_status_url="https://$ip/v1/sys/seal-status"
     seal_status_body="$(curl -k $seal_status_url)"
-    seal_status_code="$(curl -s -o /dev/null -w "%{http_code}" $seal_status_url)"
+    seal_status_code="$(curl -k -s -o /dev/null -w "%{http_code}" $seal_status_url)"
     seal_status=$(echo $seal_status_body | jq '.sealed')
 
     if [[ $seal_status_code != "200" ]]; then
