@@ -100,6 +100,7 @@ function run_errand(){
 }
 
 function sanitize_store(){
+  check_vault_unseal
   yaml2vault -f $OUTPUT/store.yml -p $YAML2VAULT_PREFIX > ${OUTPUT}/sanitized_store.yml
 }
 
@@ -134,7 +135,7 @@ function commit_config(){
   popd > /dev/null
 }
 
-trap "sanitize_store && commit_config" EXIT
+  trap "sanitize_store && commit_config" EXIT
 
 load_custom_ca_certs
 generate_configs

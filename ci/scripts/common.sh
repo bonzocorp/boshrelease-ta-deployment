@@ -24,6 +24,26 @@ function load_custom_ca_certs(){
   update-ca-certificates
 }
 
+function check_vault_unseal() {
+
+  vault_fqdn=$(echo $VAULT_ADDR | cut -d "/" -f 3)
+
+  while read ip; do
+    seal_status_url="https://$ip/v1/sys/seal-status"
+    seal_status_body="$(curl -k $seal_status_url)"
+    seal_status_code="$(curl -s -o /dev/null -w "%{http_code}" $seal_status_url)"
+    seal_status=$(echo $seal_status_body | jq '.sealed')
+
+    if [[ $seal_status_code != "200" ]]; then
+      echo "Vault is not responding"
+      exit 1
+    elif [[ $seal_status == "true" ]]; then
+      echo "Vault IP $ip is sealed"
+      exit 1
+    fi
+  done < <(dig +short $vault_fqdn)
+}
+
 function log() {
   green='\033[0;32m'
   reset='\033[0m'
