@@ -338,6 +338,8 @@ jobs:
   - task: destroy
     file: pipeline/ci/tasks/destroy.yml
     params:
+      DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
+
       VAULT_ADDR:                   (( grab meta.vault.address ))
       VAULT_TOKEN:                  (( grab meta.vault.token ))
       VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
