@@ -63,6 +63,14 @@ groups:
 <% } %>
 <% } %>
 
+<% if config.HasFeature("update_runtime_config") { %>
+- name: runtime_config
+  jobs:
+<% for _, env := range config.Envs { %>
+  - <%= env.Name %>-runtime-config
+<% } %>
+<% } %>
+
 <% if config.HasEnvsWithFeature("allow_destroy") { %>
 - name: destroy
   jobs:
@@ -242,7 +250,6 @@ jobs:
     params:
       DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
 
-
       CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
       CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
 
@@ -252,7 +259,32 @@ jobs:
 
       CREDS_FILE:           (( grab meta.<%= env.Name %>.creds_file ))
       VARS_FILE:                    (( grab meta.<%= env.Name %>.vars_file ))
+
       CLOUD_CONFIG_FILE:            (( grab meta.<%= env.Name %>.cloud_config_file ))
+
+      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
+      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+    task: update-cloud-config
+<% } %>
+
+<% if config.HasFeature("update_runtime_config") { %>
+  - file: pipeline/ci/tasks/bosh/update_runtime_config.yml
+    params:
+      DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
+
+      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
+      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+
+      VAULT_ADDR:           (( grab meta.vault.address ))
+      VAULT_TOKEN:          (( grab meta.vault.token ))
+      VAULT_SKIP_VERIFY:    (( grab meta.vault.vault_skip_verify || "false" ))
+
+      CREDS_FILE:           (( grab meta.<%= env.Name %>.creds_file ))
+
+      RUNTIME_CONFIG_FILE:            (( grab meta.<%= env.Name %>.runtime_config_file ))
+
+      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
+      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
     task: update-cloud-config
 <% } %>
 
@@ -376,6 +408,8 @@ jobs:
       VARS_FILE:                    (( grab meta.<%= env.Name %>.vars_file ))
       CLOUD_CONFIG_FILE:            (( grab meta.<%= env.Name %>.cloud_config_file ))
 
+      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
+      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
     task: update-cloud-config
 
   ensure:
@@ -383,6 +417,39 @@ jobs:
     params:
       release: lock
 
+<% } %>
+
+<% if config.HasFeature("update_runtime_config") { %>
+- name: <%= env.Name %>-runtime-config
+  serial: true
+  plan:
+  - aggregate:
+    - get: pipeline
+    - get: config
+      resource: <%= env.Name %>-configs
+    - put: lock
+      params:
+        claim: <%= env.Name %>
+  - file: pipeline/ci/tasks/bosh/update_runtime_config.yml
+    params:
+      DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
+
+      VAULT_ADDR:                   (( grab meta.vault.address ))
+      VAULT_TOKEN:                  (( grab meta.vault.token ))
+      VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
+
+      CREDS_FILE:                   (( grab meta.<%= env.Name %>.creds_file ))
+      VARS_FILE:                    (( grab meta.<%= env.Name %>.vars_file ))
+      RUNTIME_CONFIG_FILE:            (( grab meta.<%= env.Name %>.runtime_config_file ))
+
+      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
+      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+    task: update-runtime-config
+
+  ensure:
+    put: lock
+    params:
+      release: lock
 <% } %>
 
 <% if env.HasFeature("backup") { %>

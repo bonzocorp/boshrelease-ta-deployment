@@ -99,6 +99,9 @@ function generate_configs(){
     spruce merge $CLOUD_CONFIG_FILE 2>/dev/null > $OUTPUT/cloud-config.yml
   fi
 
+  if [[ ! -z "$RUNTIME_CONFIG_FILE" ]] ; then
+    spruce merge $RUNTIME_CONFIG_FILE 2>/dev/null > $OUTPUT/runtime-config.yml
+  fi
 }
 
 function authenticate_director() {
