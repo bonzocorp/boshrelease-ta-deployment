@@ -140,12 +140,10 @@ function commit_config(){
 load_custom_ca_certs
 generate_configs
 authenticate_director
-if [[ "${BOSH_CREATE_ENV,,}" == "false" ]] ; then
-  upload_stemcell
-  for release in $(ls -d *-boshrelease); do
-    upload_release $release
-  done
-fi
+upload_stemcell
+for release in $(ls -d *-boshrelease); do
+  upload_release $release
+done
 deploy
 sanitize_store
 
