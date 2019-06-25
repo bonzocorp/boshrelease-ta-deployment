@@ -621,7 +621,7 @@ resources:
   type: git
   source:
     paths:
-    - default/<%= config.Name %>/pins.yml
+    - (( concat "default/" meta.name "/pins.yml" ))
     branch:      (( grab meta.configs.branch || "master" ))
     private_key: (( grab meta.configs.private_key ))
     uri:         (( grab meta.configs.uri ))
