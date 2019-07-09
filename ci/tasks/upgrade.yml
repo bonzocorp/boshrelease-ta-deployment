@@ -49,6 +49,10 @@ inputs:
     optional: true
   - name: toolbelt-boshrelease
     optional: true
+  - name: kafka-boshrelease
+    optional: true
+  - name: zookeeper-boshrelease
+    optional: true
 
 
 
