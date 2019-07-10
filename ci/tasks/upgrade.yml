@@ -55,6 +55,8 @@ inputs:
     optional: true
   - name: zookeeper-boshrelease
     optional: true
+  - name: broker-registrar-boshrelease
+    optional: true
 
 
 
