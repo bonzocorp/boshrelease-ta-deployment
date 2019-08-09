@@ -105,7 +105,7 @@ jobs:
 <% if config.HasFeature("pin_versions") { %>
 - name: pin-resources
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline
     - get: config
       resource: <%= config.Name %>-pins
@@ -129,7 +129,7 @@ jobs:
 - name: <%= env.Name %>-upgrade
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
 <% for _, resource := range config.Resources { %>
     - get: <%= resource.Name %>
       <<: *<%= env.Name %>_upgrade_dependencies
@@ -320,7 +320,7 @@ jobs:
 - name: <%= env.Name %>-update
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline
       <<: *<%= env.Name %>_update_dependencies
     - get: metadata
@@ -360,7 +360,7 @@ jobs:
 - name: <%= env.Name %>-destroy
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline
     - get: config
       resource: <%= env.Name %>-configs
@@ -391,7 +391,7 @@ jobs:
 - name: <%= env.Name %>-cloud-config
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline
     - get: config
       resource: <%= env.Name %>-configs
@@ -423,7 +423,7 @@ jobs:
 - name: <%= env.Name %>-runtime-config
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline
     - get: config
       resource: <%= env.Name %>-configs
@@ -456,7 +456,7 @@ jobs:
 - name: <%= env.Name %>-restore
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline
     - put: lock
       params:
@@ -492,7 +492,7 @@ jobs:
 - name: <%= env.Name %>-restart-on-failure
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline
     - get: monitor-schedule-<%= env.Name %>
       trigger: true
@@ -517,7 +517,7 @@ jobs:
 - name: <%= env.Name %>-backup
   serial: true
   plan:
-  - aggregate:
+  - in_parallel:
     - get: pipeline
     <% if env.Feature("backup") == "daily" { %>
     - get: every-day
