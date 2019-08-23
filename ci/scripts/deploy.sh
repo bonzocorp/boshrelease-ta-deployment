@@ -57,7 +57,6 @@ function deploy() {
     get_current_releases_versions > $OUTPUT/releases_versions.yml
   fi
 
-
   if [[ -f stemcell/version ]]; then
     stemcell_version="$(cat stemcell/version)"
   else
@@ -135,17 +134,26 @@ function commit_config(){
   popd > /dev/null
 }
 
+function upload_releases(){
+  for release in $(ls -d *-boshrelease); do
+    upload_release $release
+  done
+}
+
+function run_errands(){
+  for errand in $BOSH_ERRANDS; do
+    run_errand $errand
+  done
+}
+
 trap "sanitize_store && commit_config" EXIT
 
 generate_configs
 authenticate_director
-upload_stemcell
-for release in $(ls -d *-boshrelease); do
-  upload_release $release
-done
+if [[ "${BOSH_CREATE_ENV,,}" != "true" ]] ; then
+  upload_stemcell
+  upload_releases
+fi
 deploy
 sanitize_store
-
-for errand in $BOSH_ERRANDS; do
-  run_errand $errand
-done
+run_errands
