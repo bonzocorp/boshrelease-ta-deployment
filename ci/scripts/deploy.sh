@@ -32,6 +32,11 @@ function deploy() {
     bosh_args="$bosh_args --recreate"
   fi
 
+  if [[ "${BOSH_FIX,,}" == "true" ]] ; then
+    bosh_args="$bosh_args --fix"
+  fi
+
+
   if [[ "${BOSH_NO_REDACT,,}" == "true" && "${BOSH_CREATE_ENV,,}" != "true" ]] ; then
     bosh_args="$bosh_args --no-redact"
   fi
