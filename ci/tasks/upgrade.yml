@@ -57,6 +57,8 @@ inputs:
     optional: true
   - name: broker-registrar-boshrelease
     optional: true
+  - name: kudo-boshrelease
+    optional: true
 
 
 
