@@ -63,6 +63,8 @@ inputs:
     optional: true
   - name: docker-boshrelease
     optional: true
+  - name: bosh-dns-boshrelease
+    optional: true
 
 
 
