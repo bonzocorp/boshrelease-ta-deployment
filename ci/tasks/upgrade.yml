@@ -61,6 +61,8 @@ inputs:
     optional: true
   - name: cfcr-etcd-boshrelease
     optional: true
+  - name: docker-boshrelease
+    optional: true
 
 
 
