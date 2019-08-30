@@ -281,6 +281,7 @@ jobs:
       VAULT_SKIP_VERIFY:    (( grab meta.vault.vault_skip_verify || "false" ))
 
       CREDS_FILE:           (( grab meta.<%= env.Name %>.creds_file ))
+      STORE_FILE:           (( grab meta.<%= env.Name %>.runtime_config_store_file ))
 
       RUNTIME_CONFIG_FILE:            (( grab meta.<%= env.Name %>.runtime_config_file ))
 
@@ -447,10 +448,16 @@ jobs:
       CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
     task: update-runtime-config
 
-  ensure:
-    put: lock
+  ensure: &<%= env.Name %>-ensure
+    put: config
+    resource: <%= env.Name %>-configs
     params:
-      release: lock
+      repository: config-mod
+      rebase: true
+    on_success:
+      put: lock
+      params:
+        release: lock
 <% } %>
 
 <% if env.HasFeature("backup") { %>

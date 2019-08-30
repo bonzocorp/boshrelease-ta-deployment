@@ -12,3 +12,4 @@ function update_runtime_config() {
 generate_configs
 authenticate_director
 update_runtime_config
+sanitize_store
