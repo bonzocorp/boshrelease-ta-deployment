@@ -57,7 +57,9 @@ inputs:
     optional: true
   - name: broker-registrar-boshrelease
     optional: true
-  - name: kudo-boshrelease
+  - name: kubo-boshrelease
+    optional: true
+  - name: cfcr-etcd-boshrelease
     optional: true
 
 
