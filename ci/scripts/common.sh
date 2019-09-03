@@ -119,4 +119,34 @@ function sanitize_store(){
   yaml2vault -f $OUTPUT/store.yml -p $YAML2VAULT_PREFIX > ${OUTPUT}/sanitized_store.yml
 }
 
+function commit_config(){
+  BUILD_NAME=$(cat metadata/build-name)
+  BUILD_JOB_NAME=$(cat metadata/build-job-name)
+  BUILD_PIPELINE_NAME=$(cat metadata/build-pipeline-name)
+  BUILD_TEAM_NAME=$(cat metadata/build-team-name)
+  ATC_EXTERNAL_URL=$(cat metadata/atc-external-url)
+
+  git clone config config-mod
+
+  if [[ -s ${STATE_FILE} ]]; then
+    cp ${STATE_FILE} ${STATE_FILE/config/config-mod}
+    git -C config-mod add ${STATE_FILE/config\//}
+  fi
+
+  if [[ -s ${OUTPUT}/sanitized_store.yml ]]; then
+    cp ${OUTPUT}/sanitized_store.yml ${STORE_FILE/config/config-mod}
+    git -C config-mod add ${STORE_FILE/config\//}
+  fi
+
+
+  pushd config-mod > /dev/null
+
+    git config --global user.name $GIT_USERNAME
+    git config --global user.email $GIT_EMAIL
+
+    if ! git diff-index --quiet HEAD --; then
+      git commit -m "Updates files for deployment: https://$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME "
+    fi
+  popd > /dev/null
+}
 load_custom_ca_certs

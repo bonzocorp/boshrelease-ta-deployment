@@ -280,6 +280,8 @@ jobs:
       VAULT_TOKEN:          (( grab meta.vault.token ))
       VAULT_SKIP_VERIFY:    (( grab meta.vault.vault_skip_verify || "false" ))
 
+      YAML2VAULT_PREFIX:    (( grab meta.<%= env.Name %>.yaml2vault_prefix ))
+
       CREDS_FILE:           (( grab meta.<%= env.Name %>.creds_file ))
       STORE_FILE:           (( grab meta.<%= env.Name %>.runtime_config_store_file ))
 
@@ -443,6 +445,8 @@ jobs:
       CREDS_FILE:                   (( grab meta.<%= env.Name %>.creds_file ))
       VARS_FILE:                    (( grab meta.<%= env.Name %>.vars_file ))
       RUNTIME_CONFIG_FILE:            (( grab meta.<%= env.Name %>.runtime_config_file ))
+
+      YAML2VAULT_PREFIX:    (( grab meta.<%= env.Name %>.yaml2vault_prefix ))
 
       CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
       CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
