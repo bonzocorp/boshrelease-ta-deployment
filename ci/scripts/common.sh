@@ -165,4 +165,21 @@ function generate_releases_version_file(){
   fi
 }
 
+function upload_release() {
+  release_path=`find ./$1 -name *.tgz | sort | head -1`
+
+  if [[ -n $release_path ]]; then
+    log "Uploading $1 release"
+    bosh upload-release $release_path
+  else
+    log "No $1 release found... Skipping upload"
+  fi
+}
+
+function upload_releases(){
+  for release in $(ls -d *-boshrelease); do
+    upload_release $release
+  done
+}
+
 load_custom_ca_certs

@@ -18,5 +18,6 @@ trap "sanitize_store && commit_config" EXIT
 
 generate_configs
 authenticate_director
+upload_releases
 update_runtime_config
 sanitize_store

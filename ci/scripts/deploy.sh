@@ -92,16 +92,14 @@ function upload_release() {
   fi
 }
 
-function run_errand(){
-  bosh run-errand $1
-}
-
-
-
 function upload_releases(){
   for release in $(ls -d *-boshrelease); do
     upload_release $release
   done
+}
+
+function run_errand(){
+  bosh run-errand $1
 }
 
 function run_errands(){
