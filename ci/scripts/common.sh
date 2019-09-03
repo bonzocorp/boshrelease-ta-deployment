@@ -151,5 +151,8 @@ function commit_config(){
       git commit -m "Updates files for deployment: https://$ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME "
     fi
   popd > /dev/null
+
+  return 0
 }
+
 load_custom_ca_certs
