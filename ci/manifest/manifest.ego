@@ -445,7 +445,8 @@ jobs:
 
       CREDS_FILE:                   (( grab meta.<%= env.Name %>.creds_file ))
       VARS_FILE:                    (( grab meta.<%= env.Name %>.vars_file ))
-      RUNTIME_CONFIG_FILE:            (( grab meta.<%= env.Name %>.runtime_config_file ))
+      STORE_FILE:                   (( grab meta.<%= env.Name %>.runtime_config_store_file ))
+      RUNTIME_CONFIG_FILE:          (( grab meta.<%= env.Name %>.runtime_config_file ))
 
       YAML2VAULT_PREFIX:    (( grab meta.<%= env.Name %>.yaml2vault_prefix ))
 

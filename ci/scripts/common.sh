@@ -126,6 +126,9 @@ function commit_config(){
   BUILD_TEAM_NAME=$(cat metadata/build-team-name)
   ATC_EXTERNAL_URL=$(cat metadata/atc-external-url)
 
+  check_if_exists "GIT_USERNAME is not defined." $GIT_USERNAME
+  check_if_exists "GIT_EMAIL is not defined." $GIT_EMAIL
+
   git clone config config-mod
 
   if [[ -s ${STATE_FILE} ]]; then
