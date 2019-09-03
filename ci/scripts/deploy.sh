@@ -32,7 +32,7 @@ function deploy() {
     bosh_args="$bosh_args --recreate"
   fi
 
-  if [[ "${BOSH_FIX,,}" == "true" ]] ; then
+  if [[ "${BOSH_FIX,,}" == "true" && "${BOSH_CREATE_ENV,,}" != "true" ]] ; then
     bosh_args="$bosh_args --fix"
   fi
 
