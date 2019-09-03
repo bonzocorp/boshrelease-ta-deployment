@@ -287,6 +287,9 @@ jobs:
 
       RUNTIME_CONFIG_FILE:            (( grab meta.<%= env.Name %>.runtime_config_file ))
 
+      GIT_USERNAME:         ((grab meta.git.username))
+      GIT_EMAIL:            ((grab meta.git.email))
+
       CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
       CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
     task: update-runtime-config
@@ -447,6 +450,9 @@ jobs:
       VARS_FILE:                    (( grab meta.<%= env.Name %>.vars_file ))
       STORE_FILE:                   (( grab meta.<%= env.Name %>.runtime_config_store_file ))
       RUNTIME_CONFIG_FILE:          (( grab meta.<%= env.Name %>.runtime_config_file ))
+
+      GIT_USERNAME:         ((grab meta.git.username))
+      GIT_EMAIL:            ((grab meta.git.email))
 
       YAML2VAULT_PREFIX:    (( grab meta.<%= env.Name %>.yaml2vault_prefix ))
 
