@@ -12,6 +12,7 @@ params:
 
 inputs:
   - name: pipeline
+  - name: metadata
   - name: config
 
 outputs:

@@ -429,6 +429,7 @@ jobs:
   plan:
   - in_parallel:
     - get: pipeline
+    - get: metadata
     - get: config
       resource: <%= env.Name %>-configs
     - put: lock
