@@ -154,5 +154,15 @@ function commit_config(){
 
   return 0
 }
+function generate_releases_version_file(){
+  for release in $(ls -d *-boshrelease); do
+    release_name=${release%"-boshrelease"}
+    echo "${release_name}_version: $(cat $release/version)" >> $OUTPUT/releases_versions.yml
+  done
+
+  if [[ ! -f $OUTPUT/releases_versions.yml ]]; then
+    get_current_releases_versions > $OUTPUT/releases_versions.yml
+  fi
+}
 
 load_custom_ca_certs

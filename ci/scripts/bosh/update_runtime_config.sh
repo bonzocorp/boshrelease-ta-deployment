@@ -6,8 +6,11 @@ set -e
 source pipeline/ci/scripts/common.sh
 
 function update_runtime_config() {
+  generate_releases_version_file
+
   bosh -n update-runtime-config \
     --vars-store $OUTPUT/store.yml \
+    -l $OUTPUT/releases_versions.yml \
     $OUTPUT/runtime-config.yml
 }
 

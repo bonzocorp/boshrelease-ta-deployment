@@ -53,14 +53,7 @@ function deploy() {
     MANIFEST_FILE=manifest.yml
   fi
 
-  for release in $(ls -d *-boshrelease); do
-    release_name=${release%"-boshrelease"}
-    echo "${release_name}_version: $(cat $release/version)" >> $OUTPUT/releases_versions.yml
-  done
-
-  if [[ ! -f $OUTPUT/releases_versions.yml ]]; then
-    get_current_releases_versions > $OUTPUT/releases_versions.yml
-  fi
+  generate_releases_version_file
 
   if [[ -f stemcell/version ]]; then
     stemcell_version="$(cat stemcell/version)"

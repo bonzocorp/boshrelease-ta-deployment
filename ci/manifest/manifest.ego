@@ -431,6 +431,10 @@ jobs:
   serial: true
   plan:
   - in_parallel:
+<% for _, resource := range config.Resources { %>
+    - get: <%= resource.Name %>
+      <<: *<%= env.Name %>_upgrade_dependencies
+<% } %>
     - get: pipeline
     - get: metadata
     - get: config
