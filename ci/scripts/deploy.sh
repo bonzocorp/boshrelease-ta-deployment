@@ -103,10 +103,6 @@ function run_errand(){
   bosh run-errand $1
 }
 
-function sanitize_store(){
-  check_vault_unseal
-  yaml2vault -f $OUTPUT/store.yml -p $YAML2VAULT_PREFIX > ${OUTPUT}/sanitized_store.yml
-}
 
 function commit_config(){
   BUILD_NAME=$(cat metadata/build-name)

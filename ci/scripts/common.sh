@@ -114,4 +114,9 @@ function authenticate_director() {
   bosh int $OUTPUT/creds.yml --path /bosh/ca_cert > $BOSH_CA_CERT
 }
 
+function sanitize_store(){
+  check_vault_unseal
+  yaml2vault -f $OUTPUT/store.yml -p $YAML2VAULT_PREFIX > ${OUTPUT}/sanitized_store.yml
+}
+
 load_custom_ca_certs
