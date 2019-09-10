@@ -41,6 +41,8 @@ inputs:
     optional: true
   - name: vault-bbr-boshrelease
     optional: true
+  - name: vault-bosh-boshrelease
+    optional: true
   - name: consul-boshrelease
     optional: true
   - name: bosh-boshrelease
