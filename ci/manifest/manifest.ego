@@ -203,7 +203,7 @@ jobs:
       BOSH_SKIP_DRAIN:      (( grab meta.<%= env.Name %>.bosh_skip_drain || "" ))
       BOSH_CREATE_ENV:      (( grab meta.<%= env.Name %>.bosh_create_env || false ))
 
-      STORE_FILE:           (( grab meta.<%= env.Name %>.store_file ))
+      STORE_FILE:           (( grab meta.<%= env.Name %>.store_file || "" ))
       STATE_FILE:           (( grab meta.<%= env.Name %>.state_file || "" ))
       VARS_FILE:            (( grab meta.<%= env.Name %>.vars_file ))
       CREDS_FILE:           (( grab meta.<%= env.Name %>.creds_file ))

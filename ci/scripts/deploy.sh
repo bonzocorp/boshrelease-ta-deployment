@@ -117,5 +117,4 @@ if [[ "${BOSH_CREATE_ENV,,}" != "true" ]] ; then
   upload_releases
 fi
 deploy
-sanitize_store # Do we need this here if there is a trap?
 run_errands

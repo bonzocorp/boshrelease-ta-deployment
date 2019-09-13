@@ -115,8 +115,10 @@ function authenticate_director() {
 }
 
 function sanitize_store(){
-  check_vault_unseal
-  yaml2vault -f $OUTPUT/store.yml -p $YAML2VAULT_PREFIX > ${OUTPUT}/sanitized_store.yml
+  if [[ ! -z "$STORE_FILE" ]] ; then
+    check_vault_unseal
+    yaml2vault -f $OUTPUT/store.yml -p $YAML2VAULT_PREFIX > ${OUTPUT}/sanitized_store.yml
+  fi
 }
 
 function commit_config(){
