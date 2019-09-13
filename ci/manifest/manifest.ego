@@ -110,6 +110,9 @@ jobs:
     - get: config
       resource: <%= config.Name %>-pins
       trigger: true
+      params:
+        submodules: (( grab meta.git.submodules || null ))
+        submodule_recursive: false
   - task: run
     file: pipeline/ci/tasks/pin-resources.yml
     params:
@@ -371,6 +374,9 @@ jobs:
     - get: pipeline
     - get: config
       resource: <%= env.Name %>-configs
+      params:
+        submodules: (( grab meta.git.submodules || null ))
+        submodule_recursive: false
     - put: lock
       params:
         claim: <%= env.Name %>
@@ -402,6 +408,9 @@ jobs:
     - get: pipeline
     - get: config
       resource: <%= env.Name %>-configs
+      params:
+        submodules: (( grab meta.git.submodules || null ))
+        submodule_recursive: false
     - put: lock
       params:
         claim: <%= env.Name %>
@@ -439,6 +448,9 @@ jobs:
     - get: metadata
     - get: config
       resource: <%= env.Name %>-configs
+      params:
+        submodules: (( grab meta.git.submodules || null ))
+        submodule_recursive: false
     - put: lock
       params:
         claim: <%= env.Name %>
@@ -487,6 +499,9 @@ jobs:
         claim: <%= env.Name %>
     - get: config
       resource: <%= env.Name %>-configs
+      params:
+        submodules: (( grab meta.git.submodules || null ))
+        submodule_recursive: false
     - get: backup
       resource: <%= env.Name %>-s3-backup
       params:
@@ -522,6 +537,9 @@ jobs:
       trigger: true
     - get: config
       resource: <%= env.Name %>-configs
+      params:
+        submodules: (( grab meta.git.submodules || null ))
+        submodule_recursive: false
   - task: check_health
     file: pipeline/ci/tasks/logsearch/check_health.yml
     params:
@@ -549,6 +567,9 @@ jobs:
     <% } %>
     - get: config
       resource: <%= env.Name %>-configs
+      params:
+        submodules: (( grab meta.git.submodules || null ))
+        submodule_recursive: false
     - put: lock
       params:
         claim: <%= env.Name %>
