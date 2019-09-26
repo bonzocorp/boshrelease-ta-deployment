@@ -38,4 +38,5 @@ Travel agent deployment project to deploy the following boshreleases:
 | **pin_versions** (Requires concouse v5) | Pins resources to provided version through a yaml config file. |
 | **restart_on_failure** (For Logsearch)  | Restarts ingestor if no logs have been recieved in the last 15 min. |
 | **check_cluster** (For Vault)           | Reads and writes a secret in vault. Fails when it can not perform the read.  |
+| **create_policies** (For Vault)         | Create or update policies in vault. Policy name will match provided policy file name.  |
 

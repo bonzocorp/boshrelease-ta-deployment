@@ -249,6 +249,22 @@ jobs:
     task: check-cluster
 <% } %>
 
+<% if env.HasFeature("create_policies") { %>
+  - file: pipeline/ci/tasks/vault/create_policies.yml
+    params:
+      DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
+
+      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
+      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+
+      VAULT_ADDR:           (( grab meta.<%= env.Name %>.vault.address ))
+      VAULT_TOKEN:          (( grab meta.<%= env.Name %>.vault.token ))
+      VAULT_SKIP_VERIFY:    (( grab meta.<%= env.Name %>.vault.vault_skip_verify || "false" ))
+
+      POLICY_FILES:         (( grab meta.<%= env.Name %>.vault.policy_files || "" ))
+    task: check-cluster
+<% } %>
+
 <% if config.HasFeature("update_cloud_config") { %>
   - file: pipeline/ci/tasks/bosh/update_cloud_config.yml
     params:
