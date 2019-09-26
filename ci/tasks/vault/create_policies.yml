@@ -17,6 +17,7 @@ params:
 
 inputs:
 - name: pipeline
+- name: config
 
 
 run:
