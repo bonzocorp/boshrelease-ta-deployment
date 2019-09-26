@@ -8,14 +8,15 @@ source pipeline/ci/scripts/common.sh
 
 
 function create_policy(){
-  local policy_file=$1
-  local policy_name=${policy_file//\.hcl/}
+  local file_path=$1
+  local file_name=$(basename $1)
+  local policy_name=${file_name//\.hcl/}
   safe target $VAULT_ADDR vault
   echo $VAULT_TOKEN | safe auth token
-  safe vault policy write $policy_name $policy_file
+  safe vault policy write $policy_name $file_path
 }
 
 for policy_file in $POLICY_FILES ;do
-  create_policy policy_file
+  create_policy $policy_file
 done
 
