@@ -262,7 +262,7 @@ jobs:
       VAULT_SKIP_VERIFY:    (( grab meta.<%= env.Name %>.vault.vault_skip_verify || "false" ))
 
       POLICY_FILES:         (( grab meta.<%= env.Name %>.vault.policy_files || "" ))
-    task: check-cluster
+    task: create-policies
 <% } %>
 
 <% if config.HasFeature("update_cloud_config") { %>
