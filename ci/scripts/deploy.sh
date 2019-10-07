@@ -108,7 +108,17 @@ function run_errands(){
   done
 }
 
-trap "sanitize_store && commit_config" EXIT
+function update_secrets(){
+  if [[ $? == 0 ]] ; then
+    log "Deploy successful. Cleaning up secrets"
+  else
+    error "Deploy failed. Cleaning up secrets"
+  fi
+
+  sanitize_store && commit_config
+}
+
+trap "update_secrets" EXIT
 
 generate_configs
 authenticate_director
