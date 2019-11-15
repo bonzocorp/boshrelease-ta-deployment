@@ -67,6 +67,9 @@ inputs:
     optional: true
   - name: bosh-dns-boshrelease
     optional: true
+  - name: harbor-boshrelease
+    optional: true
+
 
 
 
