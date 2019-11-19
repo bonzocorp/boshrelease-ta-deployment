@@ -87,6 +87,10 @@ function generate_configs(){
     spruce merge $UAA_CLIENTS_FILE 2>/dev/null > $OUTPUT/uaa_clients.yml
   fi
 
+  if [[ -s "$STORE_FILE" ]] ; then
+    echo  -e  "---\n{}" > $STORE_FILE
+  fi
+
   if [[ ! -z "$STORE_FILE" ]] ; then
     spruce merge $STORE_FILE 2>/dev/null > $OUTPUT/store.yml
   fi
