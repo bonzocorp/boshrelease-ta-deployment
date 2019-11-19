@@ -143,6 +143,7 @@ function commit_config(){
   fi
 
   if [[ -s ${OUTPUT}/sanitized_store.yml ]]; then
+    mkdir -p `dirname ${STORE_FILE/config/config-mod}`
     cp ${OUTPUT}/sanitized_store.yml ${STORE_FILE/config/config-mod}
     git -C config-mod add ${STORE_FILE/config\//}
   fi
