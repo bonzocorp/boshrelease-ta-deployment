@@ -121,8 +121,8 @@ function update_secrets(){
 trap "update_secrets" EXIT
 
 generate_configs
-authenticate_director
 if [[ "${BOSH_CREATE_ENV,,}" != "true" ]] ; then
+  authenticate_director
   upload_stemcell
   upload_releases
 fi
