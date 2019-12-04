@@ -67,6 +67,7 @@ function check_if_exists(){
     exit 1
   fi
 }
+
 function check_if_file_exists(){
   FILE=$1
 
@@ -75,6 +76,7 @@ function check_if_file_exists(){
     exit 1
   fi
 }
+
 function find_or_create() {
   for file in "$@"; do
     basedir=$(dirname "$file")
@@ -98,6 +100,7 @@ function generate_configs(){
   find_or_create $STORE_FILE
   spruce merge $STORE_FILE 2>/dev/null > $OUTPUT/store.yml
 
+  find_or_create $CREDS_FILE
   if [[ ! -z "$CREDS_FILE" ]] ; then
     spruce merge $CREDS_FILE 2>/dev/null > $OUTPUT/creds.yml
   fi
