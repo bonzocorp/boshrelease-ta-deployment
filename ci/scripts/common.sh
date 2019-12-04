@@ -75,25 +75,28 @@ function check_if_file_exists(){
     exit 1
   fi
 }
+function find_or_create() {
+  for file in "$@"; do
+    basedir=$(dirname "$file")
+    mkdir -p $basedir
+    if [[ ! -s "$file" ]] ; then
+      echo -e "---\n{}" > $file
+    fi
+  done
+}
 
 function generate_configs(){
   log "Generating config files ..."
 
-  if [[ ! -z "$VARS_FILE" ]] ; then
-    spruce merge $VARS_FILE 2>/dev/null > $OUTPUT/vars.yml
-  fi
+  find_or_create $VARS_FILE
+  spruce merge $VARS_FILE 2>/dev/null > $OUTPUT/vars.yml
 
   if [[ ! -z "$UAA_CLIENTS_FILE" ]] ; then
     spruce merge $UAA_CLIENTS_FILE 2>/dev/null > $OUTPUT/uaa_clients.yml
   fi
 
-  if [[ -s "$STORE_FILE" ]] ; then
-    echo  -e  "---\n{}" > $STORE_FILE
-  fi
-
-  if [[ ! -z "$STORE_FILE" ]] ; then
-    spruce merge $STORE_FILE 2>/dev/null > $OUTPUT/store.yml
-  fi
+  find_or_create $STORE_FILE
+  spruce merge $STORE_FILE 2>/dev/null > $OUTPUT/store.yml
 
   if [[ ! -z "$CREDS_FILE" ]] ; then
     spruce merge $CREDS_FILE 2>/dev/null > $OUTPUT/creds.yml
