@@ -90,18 +90,22 @@ function find_or_create() {
 function generate_configs(){
   log "Generating config files ..."
 
-  find_or_create $VARS_FILE
-  spruce merge $VARS_FILE 2>/dev/null > $OUTPUT/vars.yml
+  if [[ ! -z "$VARS_FILE" ]] ; then
+    find_or_create $VARS_FILE
+    spruce merge $VARS_FILE 2>/dev/null > $OUTPUT/vars.yml
+  fi
 
   if [[ ! -z "$UAA_CLIENTS_FILE" ]] ; then
     spruce merge $UAA_CLIENTS_FILE 2>/dev/null > $OUTPUT/uaa_clients.yml
   fi
 
-  find_or_create $STORE_FILE
-  spruce merge $STORE_FILE 2>/dev/null > $OUTPUT/store.yml
+  if [[ ! -z "$STORE_FILE" ]] ; then
+    find_or_create $STORE_FILE
+    spruce merge $STORE_FILE 2>/dev/null > $OUTPUT/store.yml
+  fi
 
-  find_or_create $CREDS_FILE
   if [[ ! -z "$CREDS_FILE" ]] ; then
+    find_or_create $CREDS_FILE
     spruce merge $CREDS_FILE 2>/dev/null > $OUTPUT/creds.yml
   fi
 
