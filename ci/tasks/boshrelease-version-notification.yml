@@ -1,0 +1,131 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: bonzofenix/ubuntu-ci-tools
+    tag: edge
+
+
+inputs:
+  - name: pipeline
+  - name: metadata
+  - name: logsearch-boshrelease
+    optional: true
+  - name: logsearch-for-cloudfoundry-boshrelease
+    optional: true
+  - name: jumpbox-boshrelease
+    optional: true
+  - name: os-conf-boshrelease
+    optional: true
+  - name: bosh-vsphere-cpi-boshrelease
+    optional: true
+  - name: prometheus-boshrelease
+    optional: true
+  - name: postgres-boshrelease
+    optional: true
+  - name: cf-routing-boshrelease
+    optional: true
+  - name: bpm-boshrelease
+    optional: true
+  - name: concourse-boshrelease
+    optional: true
+  - name: garden-runc-boshrelease
+    optional: true
+  - name: backup-and-restore-sdk-boshrelease
+    optional: true
+  - name: vault-boshrelease
+    optional: true
+  - name: vault-bbr-boshrelease
+    optional: true
+  - name: vault-bosh-boshrelease
+    optional: true
+  - name: consul-boshrelease
+    optional: true
+  - name: bosh-boshrelease
+    optional: true
+  - name: uaa-boshrelease
+    optional: true
+  - name: toolbelt-boshrelease
+    optional: true
+  - name: kafka-boshrelease
+    optional: true
+  - name: kafka-service-broker-boshrelease
+    optional: true
+  - name: zookeeper-boshrelease
+    optional: true
+  - name: broker-registrar-boshrelease
+    optional: true
+  - name: kubo-boshrelease
+    optional: true
+  - name: cfcr-etcd-boshrelease
+    optional: true
+  - name: docker-boshrelease
+    optional: true
+  - name: bosh-dns-boshrelease
+    optional: true
+  - name: harbor-boshrelease
+    optional: true
+  - name: logsearch-boshrelease-latest
+    optional: true
+  - name: logsearch-for-cloudfoundry-boshrelease-latest
+    optional: true
+  - name: jumpbox-boshrelease-latest
+    optional: true
+  - name: os-conf-boshrelease-latest
+    optional: true
+  - name: bosh-vsphere-cpi-boshrelease-latest
+    optional: true
+  - name: prometheus-boshrelease-latest
+    optional: true
+  - name: postgres-boshrelease-latest
+    optional: true
+  - name: cf-routing-boshrelease-latest
+    optional: true
+  - name: bpm-boshrelease-latest
+    optional: true
+  - name: concourse-boshrelease-latest
+    optional: true
+  - name: garden-runc-boshrelease-latest
+    optional: true
+  - name: backup-and-restore-sdk-boshrelease-latest
+    optional: true
+  - name: vault-boshrelease-latest
+    optional: true
+  - name: vault-bbr-boshrelease-latest
+    optional: true
+  - name: vault-bosh-boshrelease-latest
+    optional: true
+  - name: consul-boshrelease-latest
+    optional: true
+  - name: bosh-boshrelease-latest
+    optional: true
+  - name: uaa-boshrelease-latest
+    optional: true
+  - name: toolbelt-boshrelease-latest
+    optional: true
+  - name: kafka-boshrelease-latest
+    optional: true
+  - name: kafka-service-broker-boshrelease-latest
+    optional: true
+  - name: zookeeper-boshrelease-latest
+    optional: true
+  - name: broker-registrar-boshrelease-latest
+    optional: true
+  - name: kubo-boshrelease-latest
+    optional: true
+  - name: cfcr-etcd-boshrelease-latest
+    optional: true
+  - name: docker-boshrelease-latest
+    optional: true
+  - name: bosh-dns-boshrelease-latest
+    optional: true
+  - name: harbor-boshrelease-latest
+    optional: true
+
+outputs:
+  - name: output      # For debugging purposes, uncommeny
+
+run:
+  path: pipeline/ci/scripts/boshrelease-version-notification.sh

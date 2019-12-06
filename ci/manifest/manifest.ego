@@ -33,6 +33,9 @@ groups:
 <% if config.HasFeature("pin_versions") { %>
   - pin-resources
 <% } %>
+<% if config.HasFeature("slack_updates") { %>
+  - boshrelease-updates
+<% } %>
 <% for _, env := range config.Envs { %>
   - <%= env.Name %>-deploy
 <% } %>
@@ -84,6 +87,30 @@ groups:
 <% } %>
 
 jobs:
+<% if config.HasFeature("slack_updates") { %>
+- name: boshrelease-updates
+  plan:
+  - in_parallel:
+    - get: pipeline
+    - get: metadata
+<% for _, resource := range config.Resources { %>
+    - get: <%= resource.Name %>
+      params:
+        tarball: false
+<% } %>
+  - task: boshrelease-version-notification
+    file: pipeline/ci/tasks/boshrelease-version-notification.yml
+    params:
+      DEPLOYMENT_NAME:    (( grab meta.name ))
+    on_success:
+      put: notify
+      params:
+        channel:  (( grab meta.slack_updates.channel ))
+        username: (( grab meta.slack_updates.username ))
+        icon_url: (( grab meta.slack_updates.icon_url ))
+        text_file: output/boshrelease_version_notification
+<% } %>
+
 <% if config.HasFeature("pin_versions") { %>
 - name: pin-resources
   plan:
