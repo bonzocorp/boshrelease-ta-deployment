@@ -1,5 +1,6 @@
 <%! func ManifestTmpl(w io.Writer, config Config) error %>
 <%% import . "github.com/compozed/travel-agent/models" %%>
+<%% import "strings" %%>
 ---
 
 meta:
@@ -143,9 +144,11 @@ jobs:
   serial: true
   plan:
   - in_parallel:
-<% for _, resource := range config.Resources { %>
+<% for _, resource := range config.Resources {  %>
+  <% if(!strings.Contains(resource.Name, "latest")) {%>
     - get: <%= resource.Name %>
       <<: *<%= env.Name %>_deploy_dependencies
+  <% } %>
 <% } %>
     - get: pipeline
       <<: *<%= env.Name %>_deploy_dependencies

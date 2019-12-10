@@ -9,6 +9,10 @@ pipeline=$(cat metadata/build-pipeline-name)
 job=$(cat metadata/build-job-name)
 build=$(cat metadata/build-name)
 
+notification=output/boshrelease_version_notification
+pending_upgrades=output/pending_upgrades
+
+echo "${DEPLOYMENT_NAME} boshreleases status notification:" >> $notification
 for release in *-boshrelease ; do
   current=$(cat $release/version)
   latest=$(cat $release-latest/version)
@@ -16,17 +20,14 @@ for release in *-boshrelease ; do
   current="${current/\#*/}"
   latest="${latest/\#*/}"
 
-cat <<EOT >> output/boshrelease_version_notification
-New boshrelease ${release} v${latest} for ${DEPLOYMENT_NAME} is available.
-Currently running v${current}
-EOT
-
+  if [[ $current  == $latest ]]; then
+    echo "Boshrelease \`${release}\` up to date at *v${latest}*." >> $notification
+  else
+    echo "New \`${release}-boshrelease\` *v${latest}* is available. Currently running *v${current}*" >> $notification
+    echo "${release},${current},${latest}" 																											   >> $pending_upgrades
+  fi
 done
 
-
-cat <<EOT >> output/boshrelease_version_notification
-<${url}/teams/${team}/pipelines/${pipeline} |Go to pipeline>
-EOT
-
+echo "<${url}/teams/${team}/pipelines/${pipeline} |Go to pipeline>" >> $notification
 
 exit 0
