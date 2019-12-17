@@ -19,8 +19,9 @@ function deploy() {
   local stemcell_version=""
   local bosh_args=""
   local bosh_action="deploy"
+  local bosh_operations=$(cat $OUTPUT/ops_files.yml | jq ".ops_files[] " -r)
 
-  for operation_file in $BOSH_OPERATIONS ;do
+  for operation_file in $bosh_operations ;do
     bosh_args="$bosh_args -o $operation_file"
   done
 

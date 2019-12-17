@@ -95,6 +95,12 @@ function generate_configs(){
     spruce merge $VARS_FILE 2>/dev/null > $OUTPUT/vars.yml
   fi
 
+  if [[ ! -z "$OPERATIONS_FILE" ]] ; then
+    find_or_create $OPERATIONS_FILE
+    spruce json $OPERATIONS_FILE 2>/dev/null > $OUTPUT/ops_files.yml
+
+  fi
+
   if [[ ! -z "$UAA_CLIENTS_FILE" ]] ; then
     spruce merge $UAA_CLIENTS_FILE 2>/dev/null > $OUTPUT/uaa_clients.yml
   fi

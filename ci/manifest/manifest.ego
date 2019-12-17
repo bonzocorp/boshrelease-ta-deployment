@@ -209,7 +209,6 @@ jobs:
       VAULT_SKIP_VERIFY:    (( grab meta.vault.vault_skip_verify || "false" ))
 
       BOSH_DEPLOYMENT:      (( grab meta.name ))
-      BOSH_OPERATIONS:      (( grab meta.<%= env.Name %>.bosh_operations ))
       BOSH_ERRANDS:         (( grab meta.<%= env.Name %>.bosh_errands || "" ))
       BOSH_RECREATE:        (( grab meta.<%= env.Name %>.bosh_recreate || false ))
       BOSH_NO_REDACT:       (( grab meta.<%= env.Name %>.bosh_no_redact || false ))
@@ -220,6 +219,7 @@ jobs:
 
       STORE_FILE:           (( grab meta.<%= env.Name %>.store_file || "" ))
       STATE_FILE:           (( grab meta.<%= env.Name %>.state_file || "" ))
+      OPERATIONS_FILE:      (( grab meta.<%= env.Name %>.operations_file ))
       VARS_FILE:            (( grab meta.<%= env.Name %>.vars_file ))
       CREDS_FILE:           (( grab meta.<%= env.Name %>.creds_file ))
       MANIFEST_FILE:        (( grab meta.manifest_file ))

@@ -23,7 +23,7 @@ for release in *-boshrelease ; do
   if [[ $current  == $latest ]]; then
     echo "Boshrelease \`${release}\` up to date at *v${latest}*." >> $notification
   else
-    echo "New \`${release}-boshrelease\` *v${latest}* is available. Currently running *v${current}*" >> $notification
+    echo "New \`${release}\` *v${latest}* is available. Currently running *v${current}*" >> $notification
     echo "${release},${current},${latest}" 																											   >> $pending_upgrades
   fi
 done
