@@ -104,7 +104,9 @@ function run_errand(){
 }
 
 function run_errands(){
-  for errand in $BOSH_ERRANDS; do
+  local bosh_errands=$(cat $OUTPUT/errands.yml | jq ".errands[] " -r)
+
+  for errand in $bosh_errands; do
     run_errand $errand
   done
 }

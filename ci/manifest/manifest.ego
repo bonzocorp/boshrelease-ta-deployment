@@ -121,7 +121,7 @@ jobs:
       resource: <%= config.Name %>-pins
       trigger: true
       params:
-        submodules: (( grab meta.git.submodules || null ))
+        submodules: (( grab meta.git.submodules ))
         submodule_recursive: false
   - task: run
     file: pipeline/ci/tasks/pin-resources.yml
@@ -156,7 +156,7 @@ jobs:
     - get: config
       resource: <%= env.Name %>-configs
       params:
-        submodules: (( grab meta.git.submodules || null ))
+        submodules: (( grab meta.git.submodules ))
         submodule_recursive: false
 
 <% if config.HasFeature("lock_environment") && ! env.HasFeature("lock_environment") { %>
@@ -209,17 +209,18 @@ jobs:
       VAULT_SKIP_VERIFY:    (( grab meta.vault.vault_skip_verify || "false" ))
 
       BOSH_DEPLOYMENT:      (( grab meta.name ))
-      BOSH_ERRANDS:         (( grab meta.<%= env.Name %>.bosh_errands || "" ))
       BOSH_RECREATE:        (( grab meta.<%= env.Name %>.bosh_recreate || false ))
       BOSH_NO_REDACT:       (( grab meta.<%= env.Name %>.bosh_no_redact || false ))
       BOSH_DRY_RUN:         (( grab meta.<%= env.Name %>.bosh_dry_run || "" ))
       BOSH_FIX:             (( grab meta.<%= env.Name %>.bosh_fix || "" ))
       BOSH_SKIP_DRAIN:      (( grab meta.<%= env.Name %>.bosh_skip_drain || "" ))
-      BOSH_CREATE_ENV:      (( grab meta.<%= env.Name %>.bosh_create_env || false ))
+
+      BOSH_CREATE_ENV:      <%= env.Feature("create_env") %>
+      STATE_FILE:           (( grab meta.<%= env.Name %>.state_file || "" ))
 
       STORE_FILE:           (( grab meta.<%= env.Name %>.store_file || "" ))
-      STATE_FILE:           (( grab meta.<%= env.Name %>.state_file || "" ))
       OPERATIONS_FILE:      (( grab meta.<%= env.Name %>.operations_file ))
+      ERRANDS_FILE:         (( grab meta.<%= env.Name %>.errands_file || "" ))
       VARS_FILE:            (( grab meta.<%= env.Name %>.vars_file ))
       CREDS_FILE:           (( grab meta.<%= env.Name %>.creds_file ))
       MANIFEST_FILE:        (( grab meta.manifest_file ))
@@ -367,7 +368,7 @@ jobs:
     - get: config
       resource: <%= env.Name %>-configs
       params:
-        submodules: (( grab meta.git.submodules || null ))
+        submodules: (( grab meta.git.submodules ))
         submodule_recursive: false
 <% if config.HasFeature("lock_environment") && ! env.HasFeature("lock_environment") { %>
     - put: lock
@@ -405,7 +406,7 @@ jobs:
     - get: config
       resource: <%= env.Name %>-configs
       params:
-        submodules: (( grab meta.git.submodules || null ))
+        submodules: (( grab meta.git.submodules ))
         submodule_recursive: false
 <% if config.HasFeature("lock_environment") && ! env.HasFeature("lock_environment") { %>
     - put: lock
@@ -448,7 +449,7 @@ jobs:
     - get: config
       resource: <%= env.Name %>-configs
       params:
-        submodules: (( grab meta.git.submodules || null ))
+        submodules: (( grab meta.git.submodules ))
         submodule_recursive: false
 <% if config.HasFeature("lock_environment") && ! env.HasFeature("lock_environment") { %>
     - put: lock
@@ -481,7 +482,7 @@ jobs:
     put: config
     resource: <%= env.Name %>-configs
     params:
-      submodules: (( grab meta.git.submodules || null ))
+      submodules: (( grab meta.git.submodules ))
       repository: config-mod
       rebase: true
 <% if config.HasFeature("lock_environment") && ! env.HasFeature("lock_environment") { %>
@@ -506,7 +507,7 @@ jobs:
     - get: config
       resource: <%= env.Name %>-configs
       params:
-        submodules: (( grab meta.git.submodules || null ))
+        submodules: (( grab meta.git.submodules ))
         submodule_recursive: false
     - get: backup
       resource: <%= env.Name %>-s3-backup
@@ -546,7 +547,7 @@ jobs:
     - get: config
       resource: <%= env.Name %>-configs
       params:
-        submodules: (( grab meta.git.submodules || null ))
+        submodules: (( grab meta.git.submodules ))
         submodule_recursive: false
   - task: check_health
     file: pipeline/ci/tasks/logsearch/check_health.yml
@@ -576,7 +577,7 @@ jobs:
     - get: config
       resource: <%= env.Name %>-configs
       params:
-        submodules: (( grab meta.git.submodules || null ))
+        submodules: (( grab meta.git.submodules ))
         submodule_recursive: false
     <% if config.HasFeature("lock_environment") && ! env.HasFeature("lock_environment") { %>
     - put: lock

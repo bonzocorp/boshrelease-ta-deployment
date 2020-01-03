@@ -101,6 +101,11 @@ function generate_configs(){
 
   fi
 
+  if [[ ! -z "$ERRANDS_FILE" ]] ; then
+    find_or_create $ERRANDS_FILE
+    spruce json $ERRANDS_FILE 2>/dev/null > $OUTPUT/errands.yml
+  fi
+
   if [[ ! -z "$UAA_CLIENTS_FILE" ]] ; then
     spruce merge $UAA_CLIENTS_FILE 2>/dev/null > $OUTPUT/uaa_clients.yml
   fi
