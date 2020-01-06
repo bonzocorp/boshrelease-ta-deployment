@@ -18,6 +18,8 @@ inputs:
     optional: true
   - name: toolbelt-boshrelease
     optional: true
+  - name: syslog-boshrelease
+    optional: true
 
 outputs:
   - name: config-mod
