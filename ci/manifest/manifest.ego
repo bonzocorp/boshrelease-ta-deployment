@@ -26,6 +26,15 @@ meta:
     <% } else { %>
     passed: []
     <% } %>
+  <%= env.Name %>_runtime_dependencies: &<%= env.Name %>_runtime_dependencies
+    <% if env.HasDependencies() { %>
+    passed:
+      <% for _, dependency := range env.DependsOn { %>
+      - <%= dependency %>-runtime-config
+      <% } %>
+    <% } else { %>
+    passed: []
+    <% } %>
 <% } %>
 
 groups:
@@ -319,6 +328,7 @@ jobs:
 
       CREDS_FILE:           (( grab meta.<%= env.Name %>.creds_file ))
       STORE_FILE:           (( grab meta.<%= env.Name %>.runtime_config_store_file ))
+      VARS_FILE:           (( grab meta.<%= env.Name %>.vars_file ))
 
       RUNTIME_CONFIG_FILE:            (( grab meta.<%= env.Name %>.runtime_config_file ))
 
@@ -442,7 +452,7 @@ jobs:
   - in_parallel:
 <% for _, resource := range config.Resources { %>
     - get: <%= resource.Name %>
-      <<: *<%= env.Name %>_deploy_dependencies
+      <<: *<%= env.Name %>_runtime_dependencies
 <% } %>
     - get: pipeline
     - get: metadata

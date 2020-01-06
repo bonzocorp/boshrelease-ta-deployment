@@ -10,6 +10,7 @@ function update_runtime_config() {
 
   bosh -n update-runtime-config \
     --vars-store $OUTPUT/store.yml \
+    --vars-file $OUTPUT/vars.yml \
     -l $OUTPUT/releases_versions.yml \
     $OUTPUT/runtime-config.yml
 }
