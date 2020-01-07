@@ -15,11 +15,27 @@ function get_current_stemcell() {
   sed "s/.*\///g" <<<$deployment_response
 }
 
+
+function run_bosh(){
+  local bosh_action=$1
+  shift
+  local bosh_args=$@
+
+  bosh $bosh_action manifest.yml\
+    --vars-store $OUTPUT/store.yml \
+    -l $OUTPUT/releases_versions.yml \
+    -l $OUTPUT/vars.yml \
+    -v deployment_name=$BOSH_DEPLOYMENT \
+    -v stemcell_version="'$stemcell_version'" \
+      $bosh_args -n
+}
 function deploy() {
   local stemcell_version=""
-  local bosh_args=""
   local bosh_action="deploy"
   local bosh_operations=$(cat $OUTPUT/ops_files.yml | jq ".ops_files[] " -r)
+
+  # Creates a copy of the targeted manifest in the current dir
+  cp $MANIFEST_FILE manifest.yml
 
   for operation_file in $bosh_operations ;do
     bosh_args="$bosh_args -o $operation_file"
@@ -50,8 +66,6 @@ function deploy() {
     check_if_exists "STATE_FILE can not be empty when using create-env" $STATE_FILE
     bosh_action="create-env"
     bosh_args="$bosh_args --state=$STATE_FILE"
-    cp $MANIFEST_FILE manifest.yml
-    MANIFEST_FILE=manifest.yml
   fi
 
   generate_releases_version_file
@@ -62,13 +76,9 @@ function deploy() {
     stemcell_version="$(get_current_stemcell)"
   fi
 
-  bosh $bosh_action $MANIFEST_FILE \
-    --vars-store $OUTPUT/store.yml \
-    -l $OUTPUT/releases_versions.yml \
-    -l $OUTPUT/vars.yml \
-    -v deployment_name=$BOSH_DEPLOYMENT \
-    -v stemcell_version="'$stemcell_version'" \
-      $bosh_args -n
+
+  run_bosh interpolate $bosh_args
+  run_bosh $bosh_action $bosh_args
 }
 
 function upload_stemcell() {
