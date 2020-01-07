@@ -20,6 +20,19 @@ function run_bosh(){
   local bosh_action=$1
   shift
   local bosh_args=$@
+  local bosh_ops=""
+
+  for operation_file in $(cat $OUTPUT/ops_files.yml | jq ".ops_files[] " -r) ;do
+    bosh_ops="$bosh_ops -o $operation_file"
+  done
+
+  generate_releases_version_file
+
+  if [[ -f stemcell/version ]]; then
+    stemcell_version="$(cat stemcell/version)"
+  else
+    stemcell_version="$(get_current_stemcell)"
+  fi
 
   bosh $bosh_action manifest.yml\
     --vars-store $OUTPUT/store.yml \
@@ -27,19 +40,16 @@ function run_bosh(){
     -l $OUTPUT/vars.yml \
     -v deployment_name=$BOSH_DEPLOYMENT \
     -v stemcell_version="'$stemcell_version'" \
+      $bosh_ops \
       $bosh_args -n
 }
 function deploy() {
   local stemcell_version=""
+  local bosh_args=""
   local bosh_action="deploy"
-  local bosh_operations=$(cat $OUTPUT/ops_files.yml | jq ".ops_files[] " -r)
 
   # Creates a copy of the targeted manifest in the current dir
   cp $MANIFEST_FILE manifest.yml
-
-  for operation_file in $bosh_operations ;do
-    bosh_args="$bosh_args -o $operation_file"
-  done
 
   if [[ ! -z "${BOSH_SKIP_DRAIN}" ]] ; then
     bosh_args="$bosh_args --skip-drain=$BOSH_SKIP_DRAIN"
@@ -52,7 +62,6 @@ function deploy() {
   if [[ "${BOSH_FIX,,}" == "true" && "${BOSH_CREATE_ENV,,}" != "true" ]] ; then
     bosh_args="$bosh_args --fix"
   fi
-
 
   if [[ "${BOSH_NO_REDACT,,}" == "true" && "${BOSH_CREATE_ENV,,}" != "true" ]] ; then
     bosh_args="$bosh_args --no-redact"
@@ -68,16 +77,7 @@ function deploy() {
     bosh_args="$bosh_args --state=$STATE_FILE"
   fi
 
-  generate_releases_version_file
-
-  if [[ -f stemcell/version ]]; then
-    stemcell_version="$(cat stemcell/version)"
-  else
-    stemcell_version="$(get_current_stemcell)"
-  fi
-
-
-  run_bosh interpolate $bosh_args
+  run_bosh interpolate
   run_bosh $bosh_action $bosh_args
 }
 
