@@ -77,7 +77,7 @@ function deploy() {
     bosh_args="$bosh_args --state=$STATE_FILE"
   fi
 
-  run_bosh interpolate
+  run_bosh interpolate > $output/manifest.yml
   run_bosh $bosh_action $bosh_args
 }
 
