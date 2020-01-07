@@ -71,13 +71,13 @@ function deploy() {
     bosh_args="$bosh_args --dry-run"
   fi
 
-  if [[ "${BOSH_CREATE_ENV,,}" == "true" ]] ; then
+  if [[ "$BOSH_CREATE_ENV" == "true" ]] ; then
     check_if_exists "STATE_FILE can not be empty when using create-env" $STATE_FILE
     bosh_action="create-env"
     bosh_args="$bosh_args --state=$STATE_FILE"
   fi
 
-  run_bosh interpolate > $output/manifest.yml
+  run_bosh interpolate > $OUTPUT/manifest.yml
   run_bosh $bosh_action $bosh_args
 }
 
