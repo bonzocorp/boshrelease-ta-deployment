@@ -69,6 +69,8 @@ inputs:
     optional: true
   - name: harbor-boshrelease
     optional: true
+  - name: syslog-boshrelease
+    optional: true
 
 
 
