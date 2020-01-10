@@ -27,6 +27,8 @@ inputs:
     optional: true
   - name: cf-routing-boshrelease
     optional: true
+  - name: routing-boshrelease
+    optional: true
   - name: bpm-boshrelease
     optional: true
   - name: concourse-boshrelease
