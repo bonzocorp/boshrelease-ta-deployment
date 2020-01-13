@@ -457,7 +457,8 @@ jobs:
     - get: pipeline
     - get: metadata
     - get: config
-      resource: <%= env.Name %>-configs
+      resource: <%= env.Name %>-runtime-configs
+      trigger: true
       params:
         submodules: (( grab meta.git.submodules ))
         submodule_recursive: false
@@ -633,6 +634,17 @@ resources:
     private_key: (( grab meta.configs.private_key ))
     uri:         (( grab meta.configs.uri ))
 
+<% if config.HasFeature("update_runtime_config") { %>
+- name: <%= env.Name %>-runtime-configs
+  type: git
+  source:
+    paths:
+    - default/<%= config.Name %>/runtime-config.yml
+    - <%= env.Name %>/<%= config.Name %>/runtime-config.yml
+    branch:      (( grab meta.configs.branch || "master" ))
+    private_key: (( grab meta.configs.private_key ))
+    uri:         (( grab meta.configs.uri ))
+<% } %>
 
 <% if config.HasFeature("restart_on_failure") { %>
 - name: monitor-schedule-<%= env.Name %>
