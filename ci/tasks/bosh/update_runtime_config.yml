@@ -16,6 +16,8 @@ inputs:
   - name: config
   - name: bosh-dns-boshrelease
     optional: true
+  - name: bpm-boshrelease
+    optional: true
   - name: toolbelt-boshrelease
     optional: true
   - name: syslog-boshrelease
