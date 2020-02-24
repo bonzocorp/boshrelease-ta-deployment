@@ -13,7 +13,7 @@ function pin_versions(){
     resource_name=$(echo $pin | cut -d':' -f1)
     version_regex=$(echo $pin | cut -d':' -f2 | tr -d '[:space:]')
 
-    versions_response="$(fly -t concourse curl /api/v1/teams/$CONCOURSE_TEAM/pipelines/$PIPELINE_NAME/resources/$resource_name/versions -- -k)"
+    versions_response="$(fly -t concourse curl -k /api/v1/teams/$CONCOURSE_TEAM/pipelines/$PIPELINE_NAME/resources/$resource_name/versions)"
 
     log "Pinning $resource_name with version matching: $version_regex"
     version_id=$(echo $versions_response | jq -r ".[] | select(.version.version | contains(\"$version_regex\")) | .id")
