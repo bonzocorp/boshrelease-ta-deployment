@@ -135,9 +135,7 @@ jobs:
   - task: run
     file: pipeline/ci/tasks/pin-resources.yml
     params:
-      CUSTOM_ROOT_CA:                 (( grab meta.custom_root_ca || "" ))
-
-      CUSTOM_INTERMEDIATE_CA:         (( grab meta.custom_intermediate_ca || "" ))
+      CUSTOM_CA_CERTS:    (( grab meta.custom_ca_certs || "" ))
       DEBUG:              (( grab meta.debug || false ))
       PIPELINE_NAME:      <%= config.Name %>
       PINS_FILE:          (( grab meta.pins_file ))
@@ -181,12 +179,11 @@ jobs:
 
       VAULT_ADDR:           (( grab meta.vault.address ))
       VAULT_TOKEN:          (( grab meta.vault.token ))
-      VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
+      VAULT_SKIP_VERIFY:    (( grab meta.vault.vault_skip_verify || "false" ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+      CUSTOM_CA_CERTS:      (( grab meta.custom_ca_certs || "" ))
 
-      UAA_CLIENTS_FILE:             (( grab meta.<%= env.Name %>.uaa_clients_file ))
+      UAA_CLIENTS_FILE:     (( grab meta.<%= env.Name %>.uaa_clients_file ))
       VARS_FILE:            (( grab meta.<%= env.Name %>.vars_file ))
     task: create_uaa_clients
 <% } %>
@@ -198,8 +195,7 @@ jobs:
       VAULT_TOKEN:                  (( grab meta.vault.token ))
       VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+      CUSTOM_CA_CERTS:              (( grab meta.custom_ca_certs || "" ))
 
 
       DEPLOYMENT_NAME:    (( grab meta.name ))
@@ -234,8 +230,7 @@ jobs:
       CREDS_FILE:           (( grab meta.<%= env.Name %>.creds_file ))
       MANIFEST_FILE:        (( grab meta.manifest_file ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+      CUSTOM_CA_CERTS:      (( grab meta.custom_ca_certs || "" ))
 
       YAML2VAULT_PREFIX:    (( grab meta.<%= env.Name %>.yaml2vault_prefix ))
 
@@ -265,12 +260,11 @@ jobs:
     params:
       DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+      CUSTOM_CA_CERTS:      (( grab meta.custom_ca_certs || "" ))
 
-      VAULT_ADDR:           (( grab meta.<%= env.Name %>.vault.address ))
-      VAULT_TOKEN:          (( grab meta.<%= env.Name %>.vault.token ))
-      VAULT_SKIP_VERIFY:    (( grab meta.<%= env.Name %>.vault.vault_skip_verify || "false" ))
+      VAULT_ADDR:           (( grab meta.<%= env.Name %>.<%= config.Name %>.address ))
+      VAULT_TOKEN:          (( grab meta.<%= env.Name %>.<%= config.Name %>.token ))
+      VAULT_SKIP_VERIFY:    (( grab meta.<%= env.Name %>.<%= config.Name %>.vault_skip_verify || "false" ))
     task: check-cluster
 <% } %>
 
@@ -279,11 +273,10 @@ jobs:
     params:
       DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+      CUSTOM_CA_CERTS:      (( grab meta.custom_ca_certs || "" ))
 
-      VAULT_ADDR:           (( grab meta.<%= env.Name %>.vault.address ))
-      VAULT_TOKEN:          (( grab meta.<%= env.Name %>.vault.token ))
+      VAULT_ADDR:           (( grab meta.<%= env.Name %>.<%= config.Name %>.address ))
+      VAULT_TOKEN:          (( grab meta.<%= env.Name %>.<%= config.Name %>.token ))
       VAULT_SKIP_VERIFY:    (( grab meta.<%= env.Name %>.vault.vault_skip_verify || "false" ))
 
       POLICY_FILES:         (( grab meta.<%= env.Name %>.vault.policy_files || "" ))
@@ -295,8 +288,7 @@ jobs:
     params:
       DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+      CUSTOM_CA_CERTS:      (( grab meta.custom_ca_certs || "" ))
 
       VAULT_ADDR:           (( grab meta.vault.address ))
       VAULT_TOKEN:          (( grab meta.vault.token ))
@@ -307,8 +299,6 @@ jobs:
 
       CLOUD_CONFIG_FILE:            (( grab meta.<%= env.Name %>.cloud_config_file ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
     task: update-cloud-config
 <% } %>
 
@@ -317,8 +307,7 @@ jobs:
     params:
       DEBUG:                (( grab meta.<%= env.Name %>.debug || false ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+      CUSTOM_CA_CERTS:                 (( grab meta.custom_ca_certs || "" ))
 
       VAULT_ADDR:           (( grab meta.vault.address ))
       VAULT_TOKEN:          (( grab meta.vault.token ))
@@ -335,8 +324,6 @@ jobs:
       GIT_USERNAME:         ((grab meta.git.username))
       GIT_EMAIL:            ((grab meta.git.email))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
     task: update-runtime-config
 <% } %>
 
@@ -344,6 +331,8 @@ jobs:
     put: config
     resource: <%= env.Name %>-configs
     params:
+      submodules: (( grab meta.git.submodules ))
+      submodule_recursive: false
       repository: config-mod
       rebase: true
 <% if config.HasFeature("lock_environment") && ! env.HasFeature("lock_environment") { %>
@@ -394,8 +383,7 @@ jobs:
       VAULT_TOKEN:                  (( grab meta.vault.token ))
       VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+      CUSTOM_CA_CERTS:                 (( grab meta.custom_ca_certs || "" ))
 
       BOSH_DEPLOYMENT:      (( grab meta.name ))
       CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))
@@ -433,8 +421,7 @@ jobs:
       VARS_FILE:                    (( grab meta.<%= env.Name %>.vars_file ))
       CLOUD_CONFIG_FILE:            (( grab meta.<%= env.Name %>.cloud_config_file ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+      CUSTOM_CA_CERTS:                 (( grab meta.custom_ca_certs || "" ))
     task: update-cloud-config
 
 <% if config.HasFeature("lock_environment") && ! env.HasFeature("lock_environment") { %>
@@ -485,8 +472,7 @@ jobs:
 
       YAML2VAULT_PREFIX:    (( grab meta.<%= env.Name %>.yaml2vault_prefix ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+      CUSTOM_CA_CERTS:                 (( grab meta.custom_ca_certs || "" ))
     task: update-runtime-config
 
   ensure: &<%= env.Name %>-ensure
@@ -530,8 +516,7 @@ jobs:
       VAULT_TOKEN:                  (( grab meta.vault.token ))
       VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+      CUSTOM_CA_CERTS:                 (( grab meta.custom_ca_certs || "" ))
 
       DEPLOYMENT_NAME:    (( grab meta.name ))
       CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))
@@ -601,8 +586,7 @@ jobs:
       VAULT_TOKEN:                  (( grab meta.vault.token ))
       VAULT_SKIP_VERIFY:            (( grab meta.vault.vault_skip_verify || "false" ))
 
-      CUSTOM_ROOT_CA:                 ((grab meta.custom_root_ca || ""))
-      CUSTOM_INTERMEDIATE_CA:         ((grab meta.custom_intermediate_ca || ""))
+      CUSTOM_CA_CERTS:                 (( grab meta.custom_ca_certs || "" ))
 
       DEPLOYMENT_NAME:    (( grab meta.name ))
       CREDS_FILE:         (( grab meta.<%= env.Name %>.creds_file ))
@@ -689,6 +673,8 @@ resources:
     uri:         (( grab meta.locks.uri ))
     branch:      (( grab meta.locks.branch || "master" ))
     private_key: (( grab meta.locks.private_key ))
+    username:    (( grab meta.locks.username ))
+    password:    (( grab meta.locks.password ))
     pool:        (( grab meta.locks.pool ))
 <% } %>
 
