@@ -3,7 +3,6 @@
 exec >&2
 
 source pipeline/ci/scripts/common.sh
-
 function authenticate_concourse(){
   fly -t concourse login -k -u $CONCOURSE_USERNAME -p $CONCOURSE_PASSWORD -c $CONCOURSE_TARGET
 }
@@ -19,7 +18,9 @@ function pin_versions(){
     version_id=$(echo $versions_response | jq -r ".[] | select(.version.version | contains(\"$version_regex\")) | .id")
 
     fly -t concourse check-resource -r $PIPELINE_NAME/$resource_name -f version:$version_regex
-    sleep 20
+  done < $PINS_FILE
+  sleep 30
+  while read pin; do
     fly -t concourse curl /api/v1/teams/$CONCOURSE_TEAM/pipelines/$PIPELINE_NAME/resources/$resource_name/unpin '' -- -k -X PUT
     fly -t concourse curl /api/v1/teams/$CONCOURSE_TEAM/pipelines/$PIPELINE_NAME/resources/$resource_name/versions/$version_id/pin '' -- -k -X PUT
   done < $PINS_FILE
