@@ -13,15 +13,15 @@ function pin_versions(){
     resource_name=$(echo $pin | cut -d':' -f1)
     version_regex=$(echo $pin | cut -d':' -f2 | tr -d '[:space:]')
 
-    versions_response="$(fly -t concourse curl /api/v1/teams/$CONCOURSE_TEAM/pipelines/$PIPELINE_NAME/resources/$resource_name/versions -- --insecure)"
+    versions_response="$(fly -t concourse curl /api/v1/teams/$CONCOURSE_TEAM/pipelines/$PIPELINE_NAME/resources/$resource_name/versions '' -- --insecure)"
 
     log "Pinning $resource_name with version matching: $version_regex"
     version_id=$(echo $versions_response | jq -r ".[] | select(.version.version | contains(\"$version_regex\")) | .id")
 
     fly -t concourse check-resource -r $PIPELINE_NAME/$resource_name -f version:$version_regex
     sleep 20
-    fly -t concourse curl /api/v1/teams/$CONCOURSE_TEAM/pipelines/$PIPELINE_NAME/resources/$resource_name/unpin -- -k -X PUT
-    fly -t concourse curl /api/v1/teams/$CONCOURSE_TEAM/pipelines/$PIPELINE_NAME/resources/$resource_name/versions/$version_id/pin -- -k -X PUT
+    fly -t concourse curl /api/v1/teams/$CONCOURSE_TEAM/pipelines/$PIPELINE_NAME/resources/$resource_name/unpin '' -- -k -X PUT
+    fly -t concourse curl /api/v1/teams/$CONCOURSE_TEAM/pipelines/$PIPELINE_NAME/resources/$resource_name/versions/$version_id/pin '' -- -k -X PUT
   done < $PINS_FILE
 }
 
