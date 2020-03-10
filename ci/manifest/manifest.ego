@@ -12,7 +12,7 @@ meta:
     email: (( param "git email for ci bot commits when upgrading secrets" ))
 
 <% if config.HasFeature("slack_updates") { %>
-  slack_updates:
+  slack:
     uri: (( param "Slack integration webhook uri" ))
 <% } %>
 
@@ -115,9 +115,9 @@ jobs:
     on_success:
       put: notify
       params:
-        channel:  (( grab meta.slack_updates.channel ))
-        username: (( grab meta.slack_updates.username ))
-        icon_url: (( grab meta.slack_updates.icon_url ))
+        channel:  (( grab meta.slack.updates.channel ))
+        username: (( grab meta.slack.username ))
+        icon_url: (( grab meta.slack.icon_url ))
         text_file: output/boshrelease_version_notification
 <% } %>
 
@@ -346,16 +346,16 @@ jobs:
   on_success:
     put: notify
     params:
-      channel:  (( grab meta.slack_updates.channel ))
-      username: (( grab meta.slack_updates.username ))
-      icon_url: (( grab meta.slack_updates.success.icon_url ))
+      channel:  (( grab meta.slack.updates.channel || "sadf" ))
+      username: (( grab meta.slack.username ))
+      icon_url: (( grab meta.slack.success.icon_url ))
       text: "Finish <%= config.Name %> boshrelease deployment in <%= env.Name %> with successfully"
   on_failure:
     put: notify
     params:
-      channel:  (( grab meta.slack_updates.channel ))
-      username: (( grab meta.slack_updates.username ))
-      icon_url: (( grab meta.slack_updates.failure.icon_url ))
+      channel:  (( grab meta.slack.updates.channel || "sadf" ))
+      username: (( grab meta.slack.username ))
+      icon_url: (( grab meta.slack.failure.icon_url ))
       text: "Finish <%= config.Name %> boshrelease deployment in <%= env.Name %> with failure"
 <% } %>
 
@@ -664,7 +664,7 @@ resources:
 - name: notify
   type: slack-notification
   source:
-    url: (( grab meta.slack_updates.uri ))
+    url: (( grab meta.slack.uri ))
 <% } %>
 
 <% if config.HasFeature("lock_environment") { %>
