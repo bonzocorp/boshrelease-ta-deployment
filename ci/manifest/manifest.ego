@@ -344,19 +344,32 @@ jobs:
 <% } %>
 <% if config.HasFeature("slack_updates") { %>
   on_success:
-    put: notify
-    params:
-      channel:  (( grab meta.slack.updates.channel || "sadf" ))
-      username: (( grab meta.slack.username ))
-      icon_url: (( grab meta.slack.success.icon_url ))
-      text: "Finish <%= config.Name %> boshrelease deployment in <%= env.Name %> with successfully"
+    do:
+    - task: deploy-status-notification
+      file: pipeline/ci/tasks/deploy-status-notification.yml
+      params:
+        PRODUCT_NAME: <%= config.Name %>
+        BUILD_STATUS: success
+    - put: notify
+      params:
+        channel:  (( grab meta.slack.updates.channel || "sadf" ))
+        username: (( grab meta.slack.username ))
+        icon_url: (( grab meta.slack.success.icon_url ))
+        text_file: output/deploy_status_notification
   on_failure:
-    put: notify
-    params:
-      channel:  (( grab meta.slack.updates.channel || "sadf" ))
-      username: (( grab meta.slack.username ))
-      icon_url: (( grab meta.slack.failure.icon_url ))
-      text: "Finish <%= config.Name %> boshrelease deployment in <%= env.Name %> with failure"
+    do:
+    - task: deploy-status-notification
+      file: pipeline/ci/tasks/deploy-status-notification.yml
+      params:
+        PRODUCT_NAME: <%= config.Name %>
+        BUILD_STATUS: failure
+    - put: notify
+      params:
+        channel:  (( grab meta.slack.updates.channel || "sadf" ))
+        username: (( grab meta.slack.username ))
+        icon_url: (( grab meta.slack.success.icon_url ))
+        text_file: output/deploy_status_notification
+
 <% } %>
 
 <% if env.HasFeature("allow_destroy") { %>
