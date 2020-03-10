@@ -164,6 +164,7 @@ jobs:
       resource: <%= env.Name %>-configs
       params:
         submodules: (( grab meta.git.submodules ))
+        trigger: true
         submodule_recursive: false
 
 <% if config.HasFeature("lock_environment") && ! env.HasFeature("lock_environment") { %>
