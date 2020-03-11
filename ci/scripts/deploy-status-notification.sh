@@ -16,7 +16,7 @@ popd
 
 echo "**${PRODUCT_NAME} deployment finish $BUILD_STATUS**" >> $notification
 echo "Triggered by:" >> $notification
-echo "$last_commit_summary" >> $notification
+echo "```\n$last_commit_summaryi\n```" >> $notification
 echo >> $notification
 echo "<${url}/teams/${team}/pipelines/${pipeline} |Go to pipeline>" >> $notification
 
