@@ -14,10 +14,15 @@ pushd config
 last_commit_summary=$(git show --summary)
 popd
 
-echo "**${PRODUCT_NAME} deployment finish $BUILD_STATUS**" >> $notification
-echo "Triggered by:" >> $notification
-echo "```\n$last_commit_summaryi\n```" >> $notification
-echo >> $notification
-echo "<${url}/teams/${team}/pipelines/${pipeline} |Go to pipeline>" >> $notification
+echo `
+*${PRODUCT_NAME} deployment finish $BUILD_STATUS*
+Triggered by:
+
+\`\`\`
+${last_commit_summary}
+\`\`\`
+
+<${url}/teams/${team}/pipelines/${pipeline} |Go to pipeline>
+` >> $notification
 
 exit 0
