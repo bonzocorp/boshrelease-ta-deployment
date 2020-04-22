@@ -160,6 +160,7 @@ jobs:
     - get: pipeline
       <<: *<%= env.Name %>_deploy_dependencies
     - get: metadata
+    - get: deploy-image
     - get: config
       resource: <%= env.Name %>-configs
       params:
@@ -209,6 +210,7 @@ jobs:
 <% } %>
 
   - file: pipeline/ci/tasks/deploy.yml
+    image: deploy-image
     params: &<%= env.Name %>-params
       VAULT_ADDR:           (( grab meta.vault.address ))
       VAULT_TOKEN:          (( grab meta.vault.token ))
@@ -221,7 +223,7 @@ jobs:
       BOSH_FIX:             (( grab meta.<%= env.Name %>.bosh_fix || "" ))
       BOSH_SKIP_DRAIN:      (( grab meta.<%= env.Name %>.bosh_skip_drain || "" ))
 
-      BOSH_CREATE_ENV:      <%= env.Feature("create_env") %>
+      BOSH_CREATE_ENV:      <%= config.Feature("create_env") %>
       STATE_FILE:           (( grab meta.<%= env.Name %>.state_file || "" ))
 
       STORE_FILE:           (( grab meta.<%= env.Name %>.store_file || "" ))
@@ -714,6 +716,17 @@ resources:
     password:    (( grab meta.configs.password ))
     uri:         (( grab meta.configs.uri ))
 <% } %>
+
+- name: deploy-image
+  type: docker-image
+  source:
+<% if config.HasFeature("create_env") { %>
+    repository: bonzofenix/ubuntu-ci-tools
+    tag: edge
+<% } else { %>
+    repository: bonzofenix/alpine-ci-tools
+    tag: v0.0.5
+<%  } %>
 
 resource_types:
 - name: build-metadata
