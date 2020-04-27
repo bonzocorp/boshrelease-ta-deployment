@@ -125,6 +125,12 @@ inputs:
     optional: true
   - name: harbor-boshrelease-latest
     optional: true
+  - name: routing-boshrelease-latest
+    optional: true
+  - name: logsearch-for-cloudfoundry-boshrelease-latest
+    optional: true
+  - name: logsearch-boshrelease-latest
+    optional: true
 
 outputs:
   - name: output      # For debugging purposes, uncommeny
