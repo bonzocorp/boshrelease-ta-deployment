@@ -11,6 +11,14 @@ meta:
     username: (( param "git username for ci bot commits when upgrading secrets" ))
     email: (( param "git email for ci bot commits when upgrading secrets" ))
 
+  ubuntu_image_source:
+    repository: bonzofenix/ubuntu-ci-tools
+    tag: edge
+
+  alpine_image_source:
+    repository: bonzofenix/alpine-ci-tools
+    tag: v0.0.5
+
 <% if config.HasFeature("slack_updates") { %>
   slack:
     uri: (( param "Slack integration webhook uri" ))
@@ -719,13 +727,10 @@ resources:
 
 - name: deploy-image
   type: docker-image
-  source:
 <% if config.HasFeature("create_env") { %>
-    repository: bonzofenix/ubuntu-ci-tools
-    tag: edge
+  source: (( grab meta.ubuntu_image_source ))
 <% } else { %>
-    repository: bonzofenix/alpine-ci-tools
-    tag: v0.0.5
+  source: (( grab meta.alpine_image_source ))
 <%  } %>
 
 resource_types:
