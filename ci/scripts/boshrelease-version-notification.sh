@@ -1,7 +1,7 @@
 #!/bin/bash
 
-set -e
 set -x
+source pipeline/ci/scripts/common.sh
 
 url=$(cat metadata/atc-external-url)
 team=$(cat metadata/build-team-name)
@@ -14,11 +14,17 @@ pending_upgrades=output/pending_upgrades
 
 echo "${DEPLOYMENT_NAME} boshreleases status notification:" >> $notification
 for release in *-boshrelease ; do
+  if [[ ! -f $release/version ]]; then
+    continue
+  fi
+
+  current=$(cat $release/version)
   current=$(cat $release/version)
   latest=$(cat $release-latest/version)
 
   current="${current/\#*/}"
   latest="${latest/\#*/}"
+
 
   if [[ $current  == $latest ]]; then
     echo "Boshrelease \`${release}\` up to date at *v${latest}*." >> $notification
