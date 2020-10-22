@@ -14,7 +14,7 @@ pushd config
 last_commit_summary=$(git show --summary)
 popd
 
-echo `
+echo '#!/bin/bash
 *${PRODUCT_NAME} deployment finish $BUILD_STATUS*
 Triggered by:
 
@@ -23,6 +23,6 @@ ${last_commit_summary}
 \`\`\`
 
 <${url}/teams/${team}/pipelines/${pipeline} |Go to pipeline>
-` >> $notification
+' >> $notification
 
 exit 0
